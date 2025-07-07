@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etSsid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="WiFi SSID"/>
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="WiFi Password"
+        android:inputType="textPassword"/>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cornerRadius = "0dp"
+        android:text="Configure WiFi"/>
+    <Button
+        android:id="@+id/wifi_complete_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:cornerRadius = "0dp"
+        android:text="Complete Setup"/>
+</LinearLayout>
