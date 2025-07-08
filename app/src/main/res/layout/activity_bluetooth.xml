@@ -4,25 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="20dp">
 
     <Button
         android:id="@+id/btnScan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Scan for Devices"
-        app:cornerRadius="0dp" />
+        app:cornerRadius="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"/>
 
     <ListView
         android:id="@+id/lvDevices"
         android:layout_width="match_parent"
-        android:layout_height="507dp"
-        android:layout_weight="1" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="10dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
 
         <Button
             android:id="@+id/btnSend"
@@ -31,12 +35,18 @@
             android:layout_weight="1"
             android:enabled="false"
             android:text="Send Test Message"
-            app:cornerRadius="0dp" />
+            app:cornerRadius="0dp"
+            android:layout_marginRight="10dp"/>
 
         <TextView
             android:id="@+id/tvStatus"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
             android:layout_weight="1"
             android:layout_width="0dp"
+            android:text="Test data will be shown here."
+            android:layout_marginLeft="10dp"
             android:layout_height="match_parent"/>
     </LinearLayout>
 

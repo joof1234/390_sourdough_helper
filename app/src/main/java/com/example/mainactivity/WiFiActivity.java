@@ -94,6 +94,7 @@ public class WiFiActivity extends AppCompatActivity {
             if (finish){
                 Intent intent = new Intent (this, MainActivity.class);
                 intent.putExtra("ESP32_IP", ip);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             } else{
