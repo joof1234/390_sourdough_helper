@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/Summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Welcome to the Dashboard! \nHere is the data: "/>
+
+    <TextView
+        android:id="@+id/device_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="From the device: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvDeviceData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Device data will appear here"/>
+
+</LinearLayout>

@@ -3,7 +3,8 @@ package com.example.mainactivity;
 import android.bluetooth.BluetoothSocket;
 
 import java.io.IOException;
-
+// THIS CALSS IS USED TO PASS TEH BLUETOOTH CONNECTION FROM ACTIVITY TO ANOTHER!!!!!!!
+// TO PASS THE SOCKET ITSELF WITHOUT HAVING TO USE INTENTS.
 public class BluetoothConnectionManager {
     private static BluetoothConnectionManager instance;
     private BluetoothSocket socket;

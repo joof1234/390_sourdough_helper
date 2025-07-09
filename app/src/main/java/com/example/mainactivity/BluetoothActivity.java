@@ -64,6 +64,7 @@ public class BluetoothActivity extends AppCompatActivity {
         lvDevices = findViewById(R.id.lvDevices);
         tvStatus = findViewById(R.id.tvStatus);
 
+        //bluetooth setup
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
             tvStatus.setText("Bluetooth not supported");
@@ -71,23 +72,25 @@ public class BluetoothActivity extends AppCompatActivity {
             return;
         }
 
+        //ACTION BAR
         ActionBar actionBar = getSupportActionBar();
         ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
         actionBar.setBackgroundDrawable(colorDrawable);
         actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Bluetooth connection </font>"));
 
-        // Initialize device list
+        //get the list of devices
         deviceList = new ArrayList<>();
         deviceAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, deviceList);
         lvDevices.setAdapter(deviceAdapter);
 
-        // Scan button click handler
+        //scan the devices around
         btnScan.setOnClickListener(v -> {
             if (checkBluetoothPermissions()) {
                 scanDevices();
             }
         });
 
+        //COMPLETE button
         complete.setOnClickListener(v -> {
             if (connected){
                 Intent intent = new Intent (BluetoothActivity.this, WiFiActivity.class);
@@ -97,7 +100,7 @@ public class BluetoothActivity extends AppCompatActivity {
             }
         });
 
-        // ListView item click handler
+        //the list itself
         lvDevices.setOnItemClickListener((parent, view, position, id) -> {
             if (checkBluetoothPermissions()) {
                 String deviceInfo = deviceList.get(position);
@@ -120,13 +123,14 @@ public class BluetoothActivity extends AppCompatActivity {
             }
         });
 
-        // Send button click handler
+        //Send data and try to connect
         btnSend.setOnClickListener(v -> {
             if (bluetoothSocket != null && bluetoothSocket.isConnected()) {
                 try {
                     String message = "Hello ESP32!\n";
                     outputStream.write(message.getBytes(StandardCharsets.UTF_8));
-                    outputStream.flush(); // Force send
+                    outputStream.flush();
+                    //confirmation
                     tvStatus.setText("Message sent: " + message);
                 } catch (IOException e) {
                     tvStatus.setText("Error sending message");
@@ -135,6 +139,7 @@ public class BluetoothActivity extends AppCompatActivity {
         });
     }
 
+    //check if user can use bluetooth
     private boolean checkBluetoothPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -148,6 +153,7 @@ public class BluetoothActivity extends AppCompatActivity {
         return true;
     }
 
+    //scan for devices
     private void scanDevices() {
         if (bluetoothAdapter.isEnabled()) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
@@ -168,21 +174,23 @@ public class BluetoothActivity extends AppCompatActivity {
         }
     }
 
+    //connect to the bluetooth device
     private void connectToDevice(BluetoothDevice device) {
         new Thread(() -> {
             try {
-                // Existing connection code
+                //existing connection code
                 if (ActivityCompat.checkSelfPermission(BluetoothActivity.this,
                         Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
+                //try to connect
                 bluetoothSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
                 bluetoothSocket.connect();
                 outputStream = bluetoothSocket.getOutputStream();
 
                 BluetoothConnectionManager.getInstance().setSocket(bluetoothSocket);
 
-                // Add the distance reading receiver
+                //add the distance reading receiver
                 InputStream inputStream = bluetoothSocket.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
@@ -192,7 +200,7 @@ public class BluetoothActivity extends AppCompatActivity {
                     connected = true;
                 });
 
-//                // Continuous reading loop
+//                //continuous reading loop for TESTING ONLY
 //                while (true) {
 //                    try {
 //                        String distanceData = reader.readLine();
@@ -215,19 +223,20 @@ public class BluetoothActivity extends AppCompatActivity {
         }).start();
     }
 
+    //check if ur allowed to connect
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_BLUETOOTH_PERMISSIONS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, you can proceed with Bluetooth operations
+                //when given permission you scan
                 scanDevices();
             } else {
                 Toast.makeText(this, "Bluetooth permissions are required", Toast.LENGTH_SHORT).show();
             }
         }
     }
-
+    //when stopping bluetooth
     @Override
     protected void onDestroy() {
         super.onDestroy();

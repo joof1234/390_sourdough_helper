@@ -33,9 +33,6 @@ public class WiFiActivity extends AppCompatActivity {
 
     private EditText etSsid, etPassword;
     private BluetoothSocket btSocket;
-    private final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private static final int REQUEST_BLUETOOTH_PERMISSIONS = 100;
-    private BluetoothSocket bluetoothSocket;
     boolean finish = false;
     private Button complete, btnSubmit;
     String ip;
@@ -49,35 +46,40 @@ public class WiFiActivity extends AppCompatActivity {
         actionBar.setBackgroundDrawable(colorDrawable);
         actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Wifi Connection </font>"));
 
+        //widgets
         etSsid = findViewById(R.id.etSsid);
         etPassword = findViewById(R.id.etPassword);
         btnSubmit = findViewById(R.id.btnSubmit);
         complete = findViewById(R.id.wifi_complete_button);
 
-        // Get Bluetooth socket from intent
+        //get the bluetooth socket from the manager class we setup
         btSocket = BluetoothConnectionManager.getInstance().getSocket();
         if (btSocket == null || !btSocket.isConnected()) {
             Toast.makeText(this, "FAILED CONNECTION TO BLUETOOTH", Toast.LENGTH_SHORT).show();
         }
 
+        //when you press this it sends the data to the device via bluetooth
         btnSubmit.setOnClickListener(v -> {
             String ssid = etSsid.getText().toString();
             String password = etPassword.getText().toString();
 
+            //if you are connected send.
             if (btSocket != null && btSocket.isConnected()) {
                 try {
+                    //send a data with delimter of |
                     OutputStream out = btSocket.getOutputStream();
                     out.write((ssid + "|" + password + "\n").getBytes());
 
+                    //get the feedback like a "connected message"
                     InputStream in = btSocket.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                     String response = reader.readLine();
 
                     if (response != null && response.startsWith("WIFI_SUCCESS")) {
+                        //delimit everything.
                         ip = response.split("\\|")[1];
                         finish = true;
                         Toast.makeText(this, "Successfully connected to the internet!", Toast.LENGTH_SHORT).show();
-                        
                     } else {
                         Toast.makeText(this, "Failed to configure WiFi", Toast.LENGTH_SHORT).show();
                     }
@@ -90,15 +92,16 @@ public class WiFiActivity extends AppCompatActivity {
             }
         });
 
+        //complete button only if you are done bluetooth connecting.
         complete.setOnClickListener(v -> {
-            if (finish){
-                Intent intent = new Intent (this, MainActivity.class);
+            if (finish) {
+                Intent intent = new Intent(this, MainActivity.class);
                 intent.putExtra("ESP32_IP", ip);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
-            } else{
-                Toast.makeText(this, "You need to connect to the internet to complete setup!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Connect to WiFi first!", Toast.LENGTH_SHORT).show();
             }
         });
 
