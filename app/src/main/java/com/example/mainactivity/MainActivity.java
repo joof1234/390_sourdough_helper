@@ -1,5 +1,7 @@
 package com.example.mainactivity;
 
+// Writing in John's Branch
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
