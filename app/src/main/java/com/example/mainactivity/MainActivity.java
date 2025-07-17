@@ -1,6 +1,6 @@
 package com.example.mainactivity;
 
-// Writing in John's Branch
+// Writing 
 
 import android.content.Intent;
 import android.content.SharedPreferences;
