@@ -1,29 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="0dp">
 
-    <TextView
-        android:id="@+id/Summary"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarDeviceData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Welcome to the Dashboard! \nHere is the data: "/>
+        android:background="@color/accent_color"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Base.Theme.MainActivity"
+        app:title="Dashboard"
+        app:titleTextColor="@color/on_primary_color" />
 
     <TextView
-        android:id="@+id/device_msg"
+        android:id="@+id/textViewStarterNameDashboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="From the device: "
+        android:padding="10dp"
+        android:text="Starter Name"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/tvDeviceData"
+    <Button
+        android:id="@+id/buttonFeedingInstructions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Device data will appear here"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Feeding Instructions"
+        app:cornerRadius="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/Summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Data:  "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/device_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:backgroundTint="@color/secondary_variant"
+            android:padding="20dp"
+            android:text="From the device: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvDeviceData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:backgroundTint="@color/secondary_color"
+            android:padding="25dp"
+            android:text="Device data will appear here"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/buttonGraphedData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Graphed Data"
+            app:cornerRadius="10dp" />
+    </LinearLayout>
 
 </LinearLayout>

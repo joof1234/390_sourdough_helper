@@ -10,10 +10,10 @@
         android:id="@+id/btnScan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Scan for Devices"
-        app:cornerRadius="0dp"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:text="Scan for Devices"
+        app:cornerRadius="10dp" />
 
     <ListView
         android:id="@+id/lvDevices"
@@ -32,11 +32,11 @@
             android:id="@+id/btnSend"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:enabled="false"
             android:text="Send Test Message"
-            app:cornerRadius="0dp"
-            android:layout_marginRight="10dp"/>
+            app:cornerRadius="10dp" />
 
         <TextView
             android:id="@+id/tvStatus"
@@ -55,7 +55,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Next Step"
-        android:backgroundTint="@color/black"
-        app:cornerRadius="0dp" />
+        app:cornerRadius="10dp" />
 
 </LinearLayout>

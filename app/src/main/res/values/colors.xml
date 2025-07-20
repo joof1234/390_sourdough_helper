@@ -2,10 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background_color">#FF808080</color>
-    <color name="primary_color">#FF808080</color>
-    <color name="secondary_color">#FF000000</color>
-    <color name="accent_color">#FF000000</color>
-    <color name="text_color">#FF000000</color>
-    <color name="text_color_secondary">#FF000000</color>
+    <color name="background_color">#FFFFFFFF</color>
+    <color name="primary_color">#5dada0</color>
+    <color name="secondary_color">#f8dbcd</color>
+    <color name="primary_variant">#91c4c8</color>
+    <color name="secondary_variant">#ecb45f</color>
+    <color name="accent_color">#3b547c</color>
+
+    <color name="on_primary_color">#FFFFFF</color>
+    <color name="on_secondary_color">#3b547c</color>
 </resources>
