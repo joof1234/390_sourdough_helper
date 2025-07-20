@@ -31,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         ActionBar actionBar = getSupportActionBar();
-        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
+        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#ffbc92"));
         actionBar.setBackgroundDrawable(colorDrawable);
-        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>List of Starters </font>"));
+        actionBar.setTitle(Html.fromHtml("<font color='#3b547c'>List of Starters </font>"));
 
         setupViews();
         loadConnectedDevices();

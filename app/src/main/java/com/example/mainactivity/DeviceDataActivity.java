@@ -1,5 +1,6 @@
 package com.example.mainactivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -28,20 +29,31 @@ public class DeviceDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_data);
 
+        setupUI();
+
+        startDataReceiver();
+    }
+
+    private void setupUI(){
         tvDeviceData = findViewById(R.id.tvDeviceData);
         deviceIp = getIntent().getStringExtra("DEVICE_IP");
         tvDeviceMessage = findViewById(R.id.device_msg);
 
         tvDeviceMessage.setText("Device from " + deviceIp);
 
+        //setup action bar
         if (getSupportActionBar() != null) {
             ActionBar actionBar = getSupportActionBar();
-            ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
+            ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#3b547c"));
             actionBar.setBackgroundDrawable(colorDrawable);
             actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Starter Dashboard </font>"));
         }
 
-        startDataReceiver();
+        //graphed data button click
+        findViewById(R.id.buttonGraphedData).setOnClickListener(v -> {
+            Intent intent = new Intent(DeviceDataActivity.this, DataGraphActivity.class);
+            startActivity(intent);
+        });
     }
 
     //receive data from the server
