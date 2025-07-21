@@ -1,5 +1,7 @@
 package com.example.mainactivity;
 
+import static androidx.core.text.HtmlCompat.fromHtml;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -72,11 +74,14 @@ public class BluetoothActivity extends AppCompatActivity {
             return;
         }
 
-        //ACTION BAR
-        ActionBar actionBar = getSupportActionBar();
-        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
-        actionBar.setBackgroundDrawable(colorDrawable);
-        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Bluetooth connection </font>"));
+        //setup action bar
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            //actionBar.setDisplayHomeAsUpEnabled(true);
+            ColorDrawable colorDrawable = new ColorDrawable(getColor(R.color.primary_color));
+            actionBar.setBackgroundDrawable(colorDrawable);
+            actionBar.setTitle(fromHtml("Bluetooth Connection",getColor(R.color.on_primary_color)));
+        }
 
         //get the list of devices
         deviceList = new ArrayList<>();
