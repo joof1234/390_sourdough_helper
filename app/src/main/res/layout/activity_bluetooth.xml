@@ -4,57 +4,81 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="20dp"
+    android:background="@color/background_peach">
 
-    <Button
+    <!-- Scan for Devices Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnScan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="100dp"
         android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/light_salmon"
         android:text="Scan for Devices"
-        app:cornerRadius="10dp" />
+        android:textColor="@color/charcoal"
+        app:cornerRadius="16dp" />
 
-    <ListView
-        android:id="@+id/lvDevices"
+    <!-- CardView for Devices List -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/device_card"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="10dp"
         android:layout_weight="1"
-        android:layout_margin="10dp"/>
+        android:backgroundTint="@android:color/white"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
 
+        <ListView
+            android:id="@+id/lvDevices"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/brand_accent"
+            android:dividerHeight="1dp"
+            android:padding="12dp"
+            android:clipToPadding="false" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Horizontal Section for Send Button and Status -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_margin="10dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSend"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginEnd="10dp"
             android:enabled="false"
             android:text="Send Test Message"
-            app:cornerRadius="10dp" />
+            android:textColor="@color/charcoal"
+            android:backgroundTint="@color/soft_mint"
+            app:cornerRadius="16dp" />
 
         <TextView
             android:id="@+id/tvStatus"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:layout_weight="1"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
             android:text="Test data will be shown here."
-            android:layout_marginLeft="10dp"
-            android:layout_height="match_parent"/>
+            android:textColor="@color/charcoal" />
     </LinearLayout>
 
-    <Button
+    <!-- Complete / Next Step Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/complete_bluetooth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Next Step"
-        app:cornerRadius="10dp" />
+        android:textColor="@color/charcoal"
+        android:backgroundTint="@color/pale_lavender"
+        app:cornerRadius="16dp" />
 
 </LinearLayout>

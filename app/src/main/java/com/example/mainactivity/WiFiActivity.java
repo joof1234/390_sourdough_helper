@@ -1,5 +1,7 @@
 package com.example.mainactivity;
 
+import static androidx.core.text.HtmlCompat.fromHtml;
+
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -41,10 +43,14 @@ public class WiFiActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wi_fi);
 
-        ActionBar actionBar = getSupportActionBar();
-        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
-        actionBar.setBackgroundDrawable(colorDrawable);
-        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Wifi Connection </font>"));
+        //setup action bar
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            //actionBar.setDisplayHomeAsUpEnabled(true);
+            ColorDrawable colorDrawable = new ColorDrawable(getColor(R.color.primary_color));
+            actionBar.setBackgroundDrawable(colorDrawable);
+            actionBar.setTitle(fromHtml("WiFi Connection",getColor(R.color.on_primary_color)));
+        }
 
         //widgets
         etSsid = findViewById(R.id.etSsid);

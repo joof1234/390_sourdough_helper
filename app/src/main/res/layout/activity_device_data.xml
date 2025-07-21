@@ -1,79 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     android:orientation="vertical"
-    android:padding="0dp">
+    android:padding="16dp"
+    tools:context=".DeviceDataActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarDeviceData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/accent_color"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/Base.Theme.MainActivity"
-        app:title="Dashboard"
-        app:titleTextColor="@color/on_primary_color" />
+    <!-- Toolbar -->
 
+    <!-- Starter Name -->
     <TextView
         android:id="@+id/textViewStarterNameDashboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:layout_marginTop="100dp"
         android:text="Starter Name"
-        android:textSize="18sp" />
+        android:textAlignment="center"
+        android:textColor="@color/primary_text"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-    <Button
+    <!-- Feeding Instructions Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonFeedingInstructions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
         android:text="Feeding Instructions"
-        app:cornerRadius="10dp" />
+        app:cornerRadius="20dp"
+        app:iconPadding="12dp"
+        style="@style/Widget.MaterialComponents.Button" />
 
-    <LinearLayout
+    <!-- Card for Summary and Messages -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/card_background">
 
-        <TextView
-            android:id="@+id/Summary"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Data:  "
-            android:textSize="18sp" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <TextView
-            android:id="@+id/device_msg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@android:drawable/dialog_holo_light_frame"
-            android:backgroundTint="@color/secondary_variant"
-            android:padding="20dp"
-            android:text="From the device: "
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/Summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Summary:"
+                android:textColor="@color/primary_text"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvDeviceData"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@android:drawable/dialog_holo_light_frame"
-            android:backgroundTint="@color/secondary_color"
-            android:padding="25dp"
-            android:text="Device data will appear here"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/device_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/accent_color"
+                android:padding="16dp"
+                android:text="From the device:"
+                android:textColor="@color/on_secondary_color"
+                android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/buttonGraphedData"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Graphed Data"
-            app:cornerRadius="10dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tvDeviceData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/secondary_color"
+                android:padding="16dp"
+                android:text="Device data will appear here"
+                android:textColor="@color/on_secondary_color"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
+    <!-- Graphed Data Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonGraphedData"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="View Graphed Data"
+        app:cornerRadius="20dp" />
 </LinearLayout>
