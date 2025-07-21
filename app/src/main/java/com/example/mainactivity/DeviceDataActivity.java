@@ -26,10 +26,6 @@ import java.net.Socket;
 public class DeviceDataActivity extends AppCompatActivity {
     private TextView tvDeviceData, tvDeviceMessage;
     private String deviceIp, deviceMac;
-    private Handler handler = new Handler();
-    private boolean isRunning = true;
-    private Socket socket;
-    private BufferedReader reader;
 
 
     @Override
@@ -73,6 +69,8 @@ public class DeviceDataActivity extends AppCompatActivity {
         findViewById(R.id.buttonGraphedData).setOnClickListener(v -> {
             Intent intent = new Intent(DeviceDataActivity.this, DataGraphActivity.class);
             intent.putExtra("DEVICE_MAC",deviceMac);
+            //in the xml we use Singletop to prevent loss of data per pressing back buttons betweent
+            //activities.
             startActivity(intent);
         });
     }

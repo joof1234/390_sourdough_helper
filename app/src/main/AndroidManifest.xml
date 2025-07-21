@@ -27,9 +27,11 @@
             android:name=".DataGraphActivity"
             android:exported="false"
             android:parentActivityName=".DeviceDataActivity"/>
+        <!--SINGLETOP PREVENTS LOSING DATA-->
         <activity
             android:name=".DeviceDataActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".WiFiActivity"
@@ -38,6 +40,7 @@
         <activity
             android:name=".BluetoothActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".MainActivity"
