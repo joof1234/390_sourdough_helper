@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "797798205921",
+    "firebase_url": "https://sd-helper-db-default-rtdb.firebaseio.com",
+    "project_id": "sd-helper-db",
+    "storage_bucket": "sd-helper-db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797798205921:android:29dab66b715085d95daaa0",
+        "android_client_info": {
+          "package_name": "com.example.mainactivity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYc78S5m4diwJWSU-8Es2l5cJDt8MIkrY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

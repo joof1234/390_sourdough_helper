@@ -12,14 +12,18 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NavUtils;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -37,7 +41,7 @@ public class WiFiActivity extends AppCompatActivity {
     private BluetoothSocket btSocket;
     boolean finish = false;
     private Button complete, btnSubmit;
-    String ip;
+    String ip, MacAddress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +88,7 @@ public class WiFiActivity extends AppCompatActivity {
                     if (response != null && response.startsWith("WIFI_SUCCESS")) {
                         //delimit everything.
                         ip = response.split("\\|")[1];
+                        MacAddress = response.split("\\|")[2];
                         finish = true;
                         Toast.makeText(this, "Successfully connected to the internet!", Toast.LENGTH_SHORT).show();
                     } else {
@@ -103,6 +108,7 @@ public class WiFiActivity extends AppCompatActivity {
             if (finish) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.putExtra("ESP32_IP", ip);
+                intent.putExtra("ESP32_MAC", MacAddress); //send MAC address
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
@@ -111,6 +117,24 @@ public class WiFiActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.wifi_toolbar, menu);
+        return true;
+    }
+
+    //options to select in the toolbar
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //first option is to sort students by id or surname
+        if (item.getItemId()== android.R.id.home){
+            //back button
+            NavUtils.navigateUpFromSameTask(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

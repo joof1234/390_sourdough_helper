@@ -8,10 +8,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,11 +25,12 @@ import java.net.Socket;
 
 public class DeviceDataActivity extends AppCompatActivity {
     private TextView tvDeviceData, tvDeviceMessage;
-    private String deviceIp;
+    private String deviceIp, deviceMac;
     private Handler handler = new Handler();
     private boolean isRunning = true;
     private Socket socket;
     private BufferedReader reader;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,7 @@ public class DeviceDataActivity extends AppCompatActivity {
         //graphed data button click
         findViewById(R.id.buttonGraphedData).setOnClickListener(v -> {
             Intent intent = new Intent(DeviceDataActivity.this, DataGraphActivity.class);
+            intent.putExtra("DEVICE_MAC",deviceMac);
             startActivity(intent);
         });
     }
@@ -84,6 +91,24 @@ public class DeviceDataActivity extends AppCompatActivity {
                 handler.post(() -> tvDeviceData.setText("Failed to connect"));
             }
         }).start();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.device_data_toolbar, menu);
+        return true;
+    }
+
+    //options to select in the toolbar
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //first option is to sort students by id or surname
+        if (item.getItemId()== android.R.id.home){
+            //back button
+            NavUtils.navigateUpFromSameTask(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //reconnect to the active server.
