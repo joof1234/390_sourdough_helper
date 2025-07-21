@@ -1,33 +1,71 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_peach"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center_horizontal">
 
-    <EditText
-        android:id="@+id/etSsid"
+    <!-- SSID Input -->
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="WiFi SSID"/>
+        android:layout_marginBottom="12dp"
+        android:hint="WiFi SSID"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp">
 
-    <EditText
-        android:id="@+id/etPassword"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSsid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Password Input -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="WiFi Password"
-        android:inputType="textPassword"/>
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp"
+        android:layout_marginBottom="24dp">
 
-    <Button
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Submit Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSubmit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cornerRadius = "0dp"
-        android:text="Configure WiFi"/>
-    <Button
-        android:id="@+id/wifi_complete_button"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        app:cornerRadius = "0dp"
-        android:text="Complete Setup"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="Configure WiFi"
+        android:textColor="@color/charcoal"
+        android:backgroundTint="@color/light_salmon"
+        app:cornerRadius="16dp" />
+
+    <!-- Complete Setup Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/wifi_complete_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Complete Setup"
+        android:textColor="@color/charcoal"
+        android:backgroundTint="@color/pale_lavender"
+        app:cornerRadius="16dp" />
+
 </LinearLayout>

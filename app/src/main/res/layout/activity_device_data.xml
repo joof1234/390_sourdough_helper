@@ -1,29 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".DeviceDataActivity">
 
+    <!-- Toolbar -->
+
+    <!-- Starter Name -->
     <TextView
-        android:id="@+id/Summary"
+        android:id="@+id/textViewStarterNameDashboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Welcome to the Dashboard! \nHere is the data: "/>
+        android:layout_marginTop="100dp"
+        android:text="Starter Name"
+        android:textAlignment="center"
+        android:textColor="@color/primary_text"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/device_msg"
+    <!-- Feeding Instructions Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonFeedingInstructions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="From the device: "
-        android:textSize="18sp" />
+        android:layout_marginTop="12dp"
+        android:text="Feeding Instructions"
+        app:cornerRadius="20dp"
+        app:iconPadding="12dp"
+        style="@style/Widget.MaterialComponents.Button" />
 
-    <TextView
-        android:id="@+id/tvDeviceData"
+    <!-- Card for Summary and Messages -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Device data will appear here"/>
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/card_background">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/Summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Summary:"
+                android:textColor="@color/primary_text"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/device_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/accent_color"
+                android:padding="16dp"
+                android:text="From the device:"
+                android:textColor="@color/on_secondary_color"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvDeviceData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/secondary_color"
+                android:padding="16dp"
+                android:text="Device data will appear here"
+                android:textColor="@color/on_secondary_color"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Graphed Data Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonGraphedData"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="View Graphed Data"
+        app:cornerRadius="20dp" />
 </LinearLayout>

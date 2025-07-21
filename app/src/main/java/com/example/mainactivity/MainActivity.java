@@ -1,5 +1,7 @@
 package com.example.mainactivity;
 
+import static androidx.core.text.HtmlCompat.fromHtml;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +23,7 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private ListView lvDevices;
+    private Toolbar materialToolbar;
     private ArrayAdapter<String> deviceAdapter;
     private ArrayList<String> connectedDevices = new ArrayList<>();
     private Set<String> deviceIps = new HashSet<>();
@@ -29,21 +33,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        ActionBar actionBar = getSupportActionBar();
-        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
-        actionBar.setBackgroundDrawable(colorDrawable);
-        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>List of Starters </font>"));
-
         setupViews();
         loadConnectedDevices();
         checkNewDevice();
     }
 
     private void setupViews() {
+        // Initialize views
         lvDevices = findViewById(R.id.lvDevices);
         deviceAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, connectedDevices);
         lvDevices.setAdapter(deviceAdapter);
+
+        //setup action bar
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            ColorDrawable colorDrawable = new ColorDrawable(getColor(R.color.primary_color));
+            actionBar.setBackgroundDrawable(colorDrawable);
+            actionBar.setTitle(fromHtml("List of Starters",getColor(R.color.on_primary_color)));
+        }
+
 
         lvDevices.setOnItemClickListener((parent, view, position, id) -> {
             String deviceInfo = connectedDevices.get(position);
