@@ -38,8 +38,17 @@ public class DeviceDataActivity extends AppCompatActivity {
         setContentView(R.layout.activity_device_data);
 
         setupUI();
-
+        toolbar_setup();
         startDataReceiver();
+    }
+
+    private void toolbar_setup() {
+        ActionBar actionBar = getSupportActionBar();
+        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
+        actionBar.setBackgroundDrawable(colorDrawable);
+        //different name, profile page
+        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Starter Dashboard </font>"));
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     private void setupUI(){

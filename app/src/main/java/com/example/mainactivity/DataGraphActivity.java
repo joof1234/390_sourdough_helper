@@ -57,6 +57,9 @@ public class DataGraphActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_graph);
 
+
+        toolbar_setup();
+
         //we are not using IP anymore. we use mac for database recognition
         deviceMac = getIntent().getStringExtra("DEVICE_MAC");
 
@@ -118,6 +121,16 @@ public class DataGraphActivity extends AppCompatActivity {
 //        }
 //    });
     }
+
+    private void toolbar_setup() {
+        ActionBar actionBar = getSupportActionBar();
+        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
+        actionBar.setBackgroundDrawable(colorDrawable);
+        //different name, profile page
+        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Starter Data Graphs </font>"));
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.data_graphs_toolbar, menu);

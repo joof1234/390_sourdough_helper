@@ -25,16 +25,20 @@
         tools:targetApi="31">
         <activity
             android:name=".DataGraphActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".DeviceDataActivity"/>
         <activity
             android:name=".DeviceDataActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".WiFiActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".BluetoothActivity"/>
         <activity
             android:name=".BluetoothActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">

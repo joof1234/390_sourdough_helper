@@ -85,7 +85,7 @@ public class BluetoothActivity extends AppCompatActivity {
         //setup action bar
         if (getSupportActionBar() != null) {
             ActionBar actionBar = getSupportActionBar();
-            //actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
             ColorDrawable colorDrawable = new ColorDrawable(getColor(R.color.primary_color));
             actionBar.setBackgroundDrawable(colorDrawable);
             actionBar.setTitle(fromHtml("Bluetooth Connection",getColor(R.color.on_primary_color)));
