@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/Summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="Welcome to the Dashboard! \nHere is the data: "/>
+        android:text="Welcome to the Dashboard!"/>
 
     <TextView
         android:id="@+id/device_msg"
@@ -19,11 +19,26 @@
         android:text="From the device: "
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/tvDeviceData"
+<!--old graph-->
+<!--    <com.github.mikephil.charting.charts.LineChart-->
+<!--        android:id="@+id/temperatureChart"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="300dp" />-->
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Device data will appear here"/>
+        android:id="@+id/db_reset"
+        android:text="Reset Data values"
+        android:layout_margin="10dp"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"/>
 
 </LinearLayout>

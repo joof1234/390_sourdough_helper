@@ -36,6 +36,7 @@ public class WiFiActivity extends AppCompatActivity {
     boolean finish = false;
     private Button complete, btnSubmit;
     String ip;
+    String MacAddress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +79,7 @@ public class WiFiActivity extends AppCompatActivity {
                     if (response != null && response.startsWith("WIFI_SUCCESS")) {
                         //delimit everything.
                         ip = response.split("\\|")[1];
+                        MacAddress = response.split("\\|")[2];
                         finish = true;
                         Toast.makeText(this, "Successfully connected to the internet!", Toast.LENGTH_SHORT).show();
                     } else {
@@ -96,7 +98,8 @@ public class WiFiActivity extends AppCompatActivity {
         complete.setOnClickListener(v -> {
             if (finish) {
                 Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("ESP32_IP", ip);
+                intent.putExtra("ESP32_IP", ip);          //send IP address from arduino
+                intent.putExtra("ESP32_MAC", MacAddress); //send MAC address
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();

@@ -14,6 +14,10 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,9 +52,10 @@ public class MainActivity extends AppCompatActivity {
         lvDevices.setOnItemClickListener((parent, view, position, id) -> {
             String deviceInfo = connectedDevices.get(position);
             String deviceIp = deviceInfo.split(" - ")[1]; // Extract IP from display string
-
+            String deviceMac = deviceInfo.split(" - ")[2]; //get the mac address
             Intent intent = new Intent(MainActivity.this, DeviceDataActivity.class);
             intent.putExtra("DEVICE_IP", deviceIp);
+            intent.putExtra("DEVICE_MAC", deviceMac);
             startActivity(intent);
         });
 
@@ -78,12 +83,13 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("ESP32_IP")) {
             String newIp = intent.getStringExtra("ESP32_IP");
-            addConnectedDevice(newIp);
+            String newMac = intent.getStringExtra("ESP32_MAC");
+            addConnectedDevice(newIp, newMac);
         }
     }
 
-    private void addConnectedDevice(String ip) {
-        String deviceInfo = "ESP32 Device - " + ip;
+    private void addConnectedDevice(String ip, String Mac) {
+        String deviceInfo = "ESP32 Device - " + ip + " - " + Mac;
         if (!connectedDevices.contains(deviceInfo)) {
             connectedDevices.add(deviceInfo);
             saveConnectedDevices();
@@ -102,4 +108,7 @@ public class MainActivity extends AppCompatActivity {
         saveConnectedDevices();
         deviceAdapter.notifyDataSetChanged();
     }
+
+    //TODO: Make a feature so that you can reset the database data everytime you want to start fresh and just make new dough.
+    //TODO: Should be in device data, a reset button for that device's database data!!
 }
