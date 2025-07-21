@@ -110,7 +110,7 @@ public class SensorFragment extends Fragment {
         dataSet.setColor(getColorForLabel(label));  //color depends on the type of measurement
         dataSet.setDrawCircles(false);              //hides the dots
         //dataSet.setCircleRadius(4f);              //you can have dots, now no need.
-        dataSet.setLineWidth(3f);                   //line width
+        dataSet.setLineWidth(1f);                   //line width
 
         //setup the chart with the data
         LineData lineData = new LineData(dataSet);

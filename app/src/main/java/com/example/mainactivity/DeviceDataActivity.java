@@ -39,7 +39,6 @@ public class DeviceDataActivity extends AppCompatActivity {
 
         setupUI();
         toolbar_setup();
-        startDataReceiver();
     }
 
     private void toolbar_setup() {
@@ -52,12 +51,14 @@ public class DeviceDataActivity extends AppCompatActivity {
     }
 
     private void setupUI(){
-        tvDeviceData = findViewById(R.id.tvDeviceData);
         deviceIp = getIntent().getStringExtra("DEVICE_IP");
+        deviceMac = getIntent().getStringExtra("DEVICE_MAC");
+
         tvDeviceMessage = findViewById(R.id.device_msg);
+        tvDeviceData = findViewById(R.id.tvDeviceData);
 
-
-        tvDeviceMessage.setText("Device from " + deviceIp);
+        tvDeviceMessage.setText("Device IP: " + deviceIp);
+        tvDeviceData.setText("Device MAC Address: " + deviceMac);
 
         //setup action bar
         if (getSupportActionBar() != null) {
@@ -76,32 +77,6 @@ public class DeviceDataActivity extends AppCompatActivity {
         });
     }
 
-    //receive data from the server
-    private void startDataReceiver() {
-        new Thread(() -> {
-            try {
-                socket = new Socket();
-                socket.connect(new InetSocketAddress(deviceIp, 8080), 5000);
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-                while (isRunning) {
-                    try {
-                        String data = reader.readLine();
-                        if (data != null) {
-                            final String finalData = "Temp and Humidity: " + data;
-                            handler.post(() -> tvDeviceData.setText(finalData));
-                        }
-                    } catch (IOException e) {
-                        handler.post(() -> tvDeviceData.setText("Connection error"));
-                        reconnect();
-                    }
-                }
-            } catch (IOException e) {
-                handler.post(() -> tvDeviceData.setText("Failed to connect"));
-            }
-        }).start();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.device_data_toolbar, menu);
@@ -118,30 +93,5 @@ public class DeviceDataActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    //reconnect to the active server.
-    private void reconnect() {
-        try {
-            Thread.sleep(1000);
-            if (isRunning) {
-                startDataReceiver();
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    //confirmation stop wifi connection
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        isRunning = false;
-        try {
-            if (socket != null) socket.close();
-            if (reader != null) reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

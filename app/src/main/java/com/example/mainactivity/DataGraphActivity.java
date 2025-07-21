@@ -71,7 +71,7 @@ public class DataGraphActivity extends AppCompatActivity {
             ActionBar actionBar = getSupportActionBar();
             ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
             actionBar.setBackgroundDrawable(colorDrawable);
-            actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Starter Dashboard </font>"));
+            actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Starter Data Graphs </font>"));
         }
 
         //setup the pager and the tab layout

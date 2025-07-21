@@ -2,22 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="16dp"
+    android:background="@color/background_color">
 
     <TextView
         android:id="@+id/Summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Welcome to the Dashboard!"/>
+        android:textSize="25sp"
+        android:layout_marginBottom="10dp"
+        android:text="This page contains the data of your sourdough from the device itself."/>
 
     <TextView
         android:id="@+id/device_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="From the device: "
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold" />
 
     <!--old graph-->
     <!--    <com.github.mikephil.charting.charts.LineChart-->
@@ -29,7 +34,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/db_reset"
         android:text="Reset Data values"
-        android:layout_margin="10dp"/>
+        android:layout_marginBottom="10dp"
+        app:cornerRadius="20dp"
+        app:iconPadding="12dp"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
