@@ -16,7 +16,7 @@
         android:id="@+id/textViewStarterNameDashboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:text="Starter Name"
         android:textAlignment="center"
         android:textColor="@color/primary_text"
