@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -114,17 +115,22 @@ public class SensorFragment extends Fragment {
 
         //setup the chart with the data
         LineData lineData = new LineData(dataSet);
-        chart.setData(lineData);
-        chart.invalidate();
 
         //x axis details
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);  //on the bottom of chart
+        xAxis.setLabelRotationAngle(-25); //rotate the label
+        xAxis.setAvoidFirstLastClipping(true); //no clipping
         //should list the time as such:
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return String.format("%.0f:00", value); // Format as "HH:00"
+                // Convert sample index to minutes (30 seconds per sample = 0.5 minutes)
+                float minutes = value * 0.5f;
+                int hours = (int) (minutes / 60);
+                int mins = (int) (minutes % 60);
+                int days = (int) (minutes/3600);
+                return String.format(Locale.getDefault(), "%02d:%02d:%02d",days, hours, mins);
             }
         });
 
@@ -139,6 +145,16 @@ public class SensorFragment extends Fragment {
                 return String.format(Locale.getDefault(), "%.1f %s", value, unit);
             }
         });
+
+        //set the legend on top of the chart
+        Legend legend = chart.getLegend();
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        //chart settings
+        chart.setData(lineData);
+        chart.setExtraBottomOffset(30f);
+        chart.invalidate();
+
+
     }
 
     //this will tell the color we want.

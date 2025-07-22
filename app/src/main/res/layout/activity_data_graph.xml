@@ -24,11 +24,39 @@
         android:layout_marginBottom="10dp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/data_start_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Started: "
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/data_current_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Current Time:"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/data_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Duration: "
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold" />
+
     <!--old graph-->
     <!--    <com.github.mikephil.charting.charts.LineChart-->
     <!--        android:id="@+id/temperatureChart"-->
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="300dp" />-->
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +69,9 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@color/background_color"
+        style="@style/MyTabLayoutStyle"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

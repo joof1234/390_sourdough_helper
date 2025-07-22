@@ -49,14 +49,18 @@ import java.util.List;
 import java.util.Locale;
 
 public class DataGraphActivity extends AppCompatActivity {
-    private TextView tvDeviceMessage;
+    private TextView tvDeviceMessage, tvDuration, tvStartTime, tvCurrentTime;
     private String deviceMac;
     private Button databaseReset;
+
+    // Variables to track timestamps
+    private long firstTimestamp = -1;
+    private long lastTimestamp = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_graph);
-
 
         toolbar_setup();
 
@@ -67,12 +71,12 @@ public class DataGraphActivity extends AppCompatActivity {
         tvDeviceMessage = findViewById(R.id.device_msg);
         tvDeviceMessage.setText("Device from " + deviceMac);
 
-        if (getSupportActionBar() != null) {
-            ActionBar actionBar = getSupportActionBar();
-            ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
-            actionBar.setBackgroundDrawable(colorDrawable);
-            actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Starter Data Graphs </font>"));
-        }
+        tvStartTime = findViewById(R.id.data_start_time);
+        tvDuration = findViewById(R.id.data_duration);
+        tvCurrentTime = findViewById(R.id.data_current_time);
+
+        //setup a method to track duration.
+        setupTimestampTracker();
 
         //setup the pager and the tab layout
         ViewPager2 viewPager = findViewById(R.id.viewPager);
@@ -122,6 +126,80 @@ public class DataGraphActivity extends AppCompatActivity {
 //    });
     }
 
+    private void setupTimestampTracker() {
+        //get reference
+        DatabaseReference deviceReadingsRef = FirebaseDatabase.getInstance()
+                .getReference("sensors/" + deviceMac);
+        //track data changes on the database
+        deviceReadingsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                firstTimestamp = -1;
+                lastTimestamp = -1;
+                //fetch the data, if it was reset, you will be able to see it is resetted.
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    Long timestamp = childSnapshot.child("timestamp").getValue(Long.class);
+
+                    if (timestamp != null) {
+                        if (firstTimestamp == -1 || timestamp < firstTimestamp) {
+                            firstTimestamp = timestamp;
+                        }
+                        if (lastTimestamp == -1 || timestamp > lastTimestamp) {
+                            lastTimestamp = timestamp;
+                        }
+                    }
+                }
+                //go update the textviews
+                updateDurationInfo();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(DataGraphActivity.this, "Error reading timestamps", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void updateDurationInfo() {
+        if (firstTimestamp == -1 || lastTimestamp == -1) {
+            tvStartTime.setText("No dough started yet");
+            tvCurrentTime.setText("N/A");
+            tvDuration.setText("N/A");
+            return;
+        }
+
+        //format time
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String startTime = sdf.format(new Date(firstTimestamp * 1000L));
+        String currentTime = sdf.format(new Date(lastTimestamp * 1000L));
+        //calculate the duration
+        long duration = lastTimestamp - firstTimestamp;
+
+        //format the time accordingly. from seconds to days.
+        String durationText = formatDuration(duration);
+
+        // Update the TextView
+        tvStartTime.setText("Started: " + startTime);
+        tvCurrentTime.setText("Current: " + currentTime);
+        tvDuration.setText("Duration:" + durationText);
+
+    }
+    private String formatDuration(long seconds) {
+        long days = seconds / (24 * 3600);
+        long hours = (seconds % (24 * 3600)) / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+
+        if (days > 0) {
+            return String.format(Locale.getDefault(), "%d days, %d hours", days, hours);
+        } else if (hours > 0) {
+            return String.format(Locale.getDefault(), "%d hours, %d minutes", hours, minutes);
+        } else if (minutes > 0) {
+            return String.format(Locale.getDefault(), "%d minutes, %d seconds", minutes, secs);
+        } else {
+            return String.format(Locale.getDefault(), "%d seconds", secs);
+        }
+    }
+
     private void toolbar_setup() {
         ActionBar actionBar = getSupportActionBar();
         ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
@@ -130,13 +208,11 @@ public class DataGraphActivity extends AppCompatActivity {
         actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Starter Data Graphs </font>"));
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.data_graphs_toolbar, menu);
         return true;
     }
-
     //options to select in the toolbar
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -148,7 +224,6 @@ public class DataGraphActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
     private void resetDeviceData() {
         //get the database reference for the mac_address
         DatabaseReference deviceReadingsRef = FirebaseDatabase.getInstance()
