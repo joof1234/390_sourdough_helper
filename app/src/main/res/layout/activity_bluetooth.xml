@@ -11,11 +11,11 @@
         android:id="@+id/bt_guide_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:textSize="20dp"
         android:layout_marginTop="20dp"
-        android:text="Only paired devices to your phone wills how up on the list to select."
-        android:textColor="@color/charcoal" />
+        android:gravity="center_vertical"
+        android:text="Only paired devices to your phone will Show up on the list to select."
+        android:textColor="@color/charcoal"
+        android:textSize="20dp" />
 
     <!-- Scan for Devices Button -->
     <com.google.android.material.button.MaterialButton

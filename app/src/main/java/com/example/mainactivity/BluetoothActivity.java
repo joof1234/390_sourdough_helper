@@ -92,7 +92,7 @@ public class BluetoothActivity extends AppCompatActivity {
         }
 
         //get the list of devices
-        deviceList = new ArrayList<>();
+        deviceList= new ArrayList<>();
         deviceAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, deviceList);
         lvDevices.setAdapter(deviceAdapter);
 

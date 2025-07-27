@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +28,7 @@ import java.net.Socket;
 public class DeviceDataActivity extends AppCompatActivity {
     private TextView tvDeviceData, tvDeviceMessage;
     private String deviceIp, deviceMac;
-
+    private Button buttonFeedingInstructions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +40,15 @@ public class DeviceDataActivity extends AppCompatActivity {
     }
 
     private void toolbar_setup() {
-        ActionBar actionBar = getSupportActionBar();
-        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
-        actionBar.setBackgroundDrawable(colorDrawable);
-        //different name, profile page
-        actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Starter Dashboard </font>"));
-        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        if(getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor("#cc8e90"));
+            actionBar.setBackgroundDrawable(colorDrawable);
+            //different name, profile page
+            actionBar.setTitle(Html.fromHtml("<font color='#ffffff'>Starter Dashboard </font>"));
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void setupUI(){
@@ -73,6 +78,16 @@ public class DeviceDataActivity extends AppCompatActivity {
             //activities.
             startActivity(intent);
         });
+
+        buttonFeedingInstructions = findViewById(R.id.buttonFeedingInstructions);
+        buttonFeedingInstructions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DeviceDataActivity.this, FeedingsInstructionsActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
