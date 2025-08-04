@@ -96,7 +96,12 @@ public class DataGraphActivity extends AppCompatActivity {
         databaseReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetDeviceData();
+                try {
+                    resetDeviceData();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(DataGraphActivity.this, "Error Resetting Data", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 //        //database test move later

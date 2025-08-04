@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -78,23 +79,28 @@ public class SensorFragment extends Fragment {
                     //we want our chart to only display float values.
                     //not all values are floats, we must cast it appropriately.
                     //we can make a class later if we want to condense this.
-                    if (value != null && timestamp != null) {
-                        float floatValue = 0;
-                        if (value instanceof Integer) {
-                            floatValue = ((Integer) value).floatValue();
-                        } else if (value instanceof Long) {
-                            floatValue = ((Long) value).floatValue();
-                        } else if (value instanceof Double) {
-                            floatValue = ((Double) value).floatValue();
-                        } else if (value instanceof Float) {
-                            floatValue = (Float) value;
+                    try {
+                        if (value != null && timestamp != null) {
+                            float floatValue = 0;
+                            if (value instanceof Integer) {
+                                floatValue = ((Integer) value).floatValue();
+                            } else if (value instanceof Long) {
+                                floatValue = ((Long) value).floatValue();
+                            } else if (value instanceof Double) {
+                                floatValue = ((Double) value).floatValue();
+                            } else if (value instanceof Float) {
+                                floatValue = (Float) value;
+                            }
+                            entries.add(new Entry(entries.size(), floatValue));
                         }
-                        entries.add(new Entry(entries.size(), floatValue));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Failed to parse sensor values", Toast.LENGTH_SHORT).show();
                     }
+                    //send the new values.
+                    //updates each time there is a new value added to database.
+                    updateChart(entries, fieldName, unit);
                 }
-                //send the new values.
-                //updates each time there is a new value added to database.
-                updateChart(entries, fieldName, unit);
             }
 
             //error handling.

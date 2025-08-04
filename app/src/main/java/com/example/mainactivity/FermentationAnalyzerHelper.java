@@ -99,4 +99,35 @@ public class FermentationAnalyzerHelper {
         return co2Stuff;
     }
 
+    /*
+    Each day record the min and max co2, humidity, temperature and height. after 16 hours each day you compare the max and the minimum
+    and you put a section for each element.
+
+    conditions to tell the user to go on the next feeding/day:
+    (actually making dough)
+    Check if there was a 3- 4 times increase in co2
+    If dough doubles in height good sign your starter is going well
+
+    if the user doesnt meet these in 24 hours (in 1 day) then there is an issue.
+    You give trouble shooting tips, maybe tell them to restart, add water, flour, etc.
+
+    Conditions to warn the user (notifications)
+    IF the temperature is under 24 C then you need to tell them that your starter is
+    not growing optimally.
+    If the temperature is over 28, it is growing too fast and the quality is going to be bad
+    If the humidity is under 70% (confirm), you tell the user that it is too dry, add water
+    If the humidity is over 90% too wet. You messed up. You need to restart.
+    The user will get these as notifications, so when something like this happens, we send a notification
+    to tell them that something is wrong.
+
+    ERROR HANDLING:
+    -portrait mode issue. When you decide to rotate your phone, your app will rotate and mess up the entire UI.
+    Make sure you can lock the entire app to just portrait mode to avoid this issue.
+    Serach up ways to make an app unbreakable.
+    - Maybe you should try to break it using what people said.
+    - For example, if you press many buttons at the same time, does it crash?
+    - If you spam things really really fast, will it crash? How can we fix this?
+    - Literally try it on your app, spam press things rally fast and it might just crash/
+     */
+
 }

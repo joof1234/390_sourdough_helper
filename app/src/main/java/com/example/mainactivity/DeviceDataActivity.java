@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -72,21 +73,26 @@ public class DeviceDataActivity extends AppCompatActivity {
 
         //graphed data button click
         findViewById(R.id.buttonGraphedData).setOnClickListener(v -> {
-            Intent intent = new Intent(DeviceDataActivity.this, DataGraphActivity.class);
-            intent.putExtra("DEVICE_MAC",deviceMac);
-            //in the xml we use Singletop to prevent loss of data per pressing back buttons betweent
-            //activities.
-            startActivity(intent);
-        });
-
-        buttonFeedingInstructions = findViewById(R.id.buttonFeedingInstructions);
-        buttonFeedingInstructions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DeviceDataActivity.this, FeedingsInstructionsActivity.class);
+            try {
+                Intent intent = new Intent(DeviceDataActivity.this, DataGraphActivity.class);
+                intent.putExtra("DEVICE_MAC", deviceMac);
+                //in the xml we use Singletop to prevent loss of data per pressing back buttons betweent
+                //activities.
                 startActivity(intent);
+            } catch(Exception e) {
+                e.printStackTrace();
+                Toast.makeText(DeviceDataActivity.this, "Failed to open graph activity", Toast.LENGTH_SHORT).show();
             }
         });
+
+//        buttonFeedingInstructions = findViewById(R.id.buttonFeedingInstructions);
+//        buttonFeedingInstructions.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(DeviceDataActivity.this, FeedingsInstructionsActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
     }
 

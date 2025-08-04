@@ -98,40 +98,49 @@ public class BluetoothActivity extends AppCompatActivity {
 
         //scan the devices around
         btnScan.setOnClickListener(v -> {
-            if (checkBluetoothPermissions()) {
-                scanDevices();
+            try {
+                if (checkBluetoothPermissions()) {
+                    scanDevices();
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to scan devices", Toast.LENGTH_SHORT).show();
             }
         });
 
         //COMPLETE button
         complete.setOnClickListener(v -> {
-            if (connected){
-                Intent intent = new Intent (BluetoothActivity.this, WiFiActivity.class);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Connect to a device first!", Toast.LENGTH_SHORT).show();
+            try {
+                if (connected) {
+                    Intent intent = new Intent(BluetoothActivity.this, WiFiActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Connect to a device first!", Toast.LENGTH_SHORT).show();
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to complete connection to device", Toast.LENGTH_SHORT).show();
             }
         });
 
         //the list itself
         lvDevices.setOnItemClickListener((parent, view, position, id) -> {
             if (checkBluetoothPermissions()) {
-                String deviceInfo = deviceList.get(position);
-                String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
-
                 try {
-                    BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
-                    connectToDevice(device);
-                    String deviceName;
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
-                        deviceName = device.getName();
-                    } else {
-                        deviceName = "Unknown Device";
-                    }
-                    tvStatus.setText("Connecting to " + deviceName);
-//                    btnSend.setEnabled(true);
+                    String deviceInfo = deviceList.get(position);
+                    String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
+                        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
+                        connectToDevice(device);
+                        String deviceName;
+                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+                            deviceName = device.getName();
+                        } else {
+                            deviceName = "Unknown Device";
+                        }
+                        tvStatus.setText("Connecting to " + deviceName);
+//                      btnSend.setEnabled(true);
                 } catch (IllegalArgumentException e) {
-                    tvStatus.setText("Invalid device address");
+                        tvStatus.setText("Invalid device address");
                 }
             }
         });
