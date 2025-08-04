@@ -23,11 +23,8 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private ListView lvDevices;
-    private Toolbar materialToolbar;
     private ArrayAdapter<String> deviceAdapter;
     private ArrayList<String> connectedDevices = new ArrayList<>();
-    private Set<String> deviceIps = new HashSet<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

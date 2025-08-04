@@ -10,12 +10,19 @@ import android.os.Handler;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +33,8 @@ import java.net.Socket;
 public class DeviceDataActivity extends AppCompatActivity {
     private TextView tvDeviceData, tvDeviceMessage;
     private String deviceIp, deviceMac;
-
+    private Button btnStop, btnStart, btnNew, btnNextDay;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +64,110 @@ public class DeviceDataActivity extends AppCompatActivity {
         tvDeviceMessage.setText("Device IP: " + deviceIp);
         tvDeviceData.setText("Device MAC Address: " + deviceMac);
 
+        btnStart = findViewById(R.id.device_data_start_button);
+        btnStop = findViewById(R.id.device_data_stop_button);
+        btnNew = findViewById(R.id.device_data_new_button);
+        btnNextDay = findViewById(R.id.device_data_new_day);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("sensors/" + deviceMac);
+
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseReference.child("general")
+                        .child("current_day")
+                        .get().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                DataSnapshot snapshot = task.getResult();
+                                if (snapshot.exists()) {
+                                    Integer currentDay = snapshot.getValue(Integer.class);
+                                    if (currentDay != null && currentDay == 0) {
+                                        Toast.makeText(DeviceDataActivity.this,
+                                                "You need to start a new dough first!",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
+            }
+        });
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseReference.child("general")
+                        .child("current_day")
+                        .get().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                DataSnapshot snapshot = task.getResult();
+                                if (snapshot.exists()) {
+                                    Integer currentDay = snapshot.getValue(Integer.class);
+                                    if (currentDay != null && currentDay == 0) {
+                                        Toast.makeText(DeviceDataActivity.this,
+                                                "You need to start a new dough first!",
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        databaseReference.child("general")
+                                                .child("enable")
+                                                .setValue(false)
+                                                .addOnSuccessListener(aVoid -> {
+                                                    Toast.makeText(DeviceDataActivity.this,
+                                                            "Device disabled successfully",
+                                                            Toast.LENGTH_SHORT).show();
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Toast.makeText(DeviceDataActivity.this,
+                                                            "Failed to disable device: " + e.getMessage(),
+                                                            Toast.LENGTH_SHORT).show();
+                                                });
+                                    }
+                                }
+                            }
+                        });
+            }
+        });
+        btnNew.setOnClickListener(v -> {
+            databaseReference.child("general").child("current_day").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DataSnapshot snapshot = task.getResult();
+                    if (snapshot.exists()) {
+                        Integer currentDay = snapshot.getValue(Integer.class);
+                        if (currentDay != null && currentDay == 0) {
+                            //move the user to the intent to 1st day, and when they complete that intent, they should come back to this activity
+                            //and the device should have it enabled.
+                            databaseReference.child("general").child("current_day").setValue(1).addOnSuccessListener(aVoid -> {
+                                Toast.makeText(DeviceDataActivity.this, "Device set to day 1!", Toast.LENGTH_SHORT).show();
+                                databaseReference.child("general").child("enable").setValue(true).addOnFailureListener(e -> {
+                                    Toast.makeText(DeviceDataActivity.this, "Failed to enable device: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(DeviceDataActivity.this, "Failed to set the device date!" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                        } else {
+                            Toast.makeText(DeviceDataActivity.this,
+                                    "Confirm Restart??",
+                                    Toast.LENGTH_SHORT).show();
+                            //clear all day data, move the user to the first feeding day. once they are done, it enables the sensors.
+                            //TODO: You need to confirm restart when you press this button.
+                        }
+                    }
+                }
+            });
+        });
+        btnNextDay.setOnClickListener(v -> {
+            //check with the algorithm if the user's data is good.
+            //get the maximum height, co2, and time, and do comparison
+
+            //if everything is met, disable the device, and move the user to the next feeding day.
+            //if not met, prompt the user to be sure to press the next day.
+
+            //then, for either cases start an intent to a feeding activity for the day
+            //when the user is done, returns to this activity, and enables the device again.
+
+            //if the user is at day 7, then something else happens. maybe we show them recipes or we tell them that this dough is complete,
+            //and that you can't continue, or tell them how to maintain it, but the lid is not used anymore after this.
+        });
+
+        //TODO: MAKE A NEXT DAY BUTTON.
         //setup action bar
         if (getSupportActionBar() != null) {
             ActionBar actionBar = getSupportActionBar();

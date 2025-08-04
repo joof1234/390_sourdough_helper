@@ -63,8 +63,10 @@ public class SensorFragment extends Fragment {
         String fieldName = args.getString(ARG_FIELD);
         String unit = args.getString(ARG_UNIT);
 
+        //TODO: MAKE SURE YOU CAN CYCLE PER DAY, AND DECTECT THE DAY YOU ARE REPRESENTING ON THE CHARTS.
+        // DRILLDOWN REQUIRED>
         //get the database
-        dbRef = FirebaseDatabase.getInstance().getReference("sensors/" + deviceMac);
+        dbRef = FirebaseDatabase.getInstance().getReference("sensors/" + deviceMac + "/day_1");
         //when a new value is added to the database, to that specific device,
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -119,18 +121,18 @@ public class SensorFragment extends Fragment {
         //x axis details
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);  //on the bottom of chart
-        xAxis.setLabelRotationAngle(-25); //rotate the label
+        xAxis.setLabelRotationAngle(-15); //rotate the label
+        xAxis.setLabelCount(4);
         xAxis.setAvoidFirstLastClipping(true); //no clipping
         //should list the time as such:
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
                 // Convert sample index to minutes (30 seconds per sample = 0.5 minutes)
-                float minutes = value * 0.5f;
-                int hours = (int) (minutes / 60);
-                int mins = (int) (minutes % 60);
-                int days = (int) (minutes/3600);
-                return String.format(Locale.getDefault(), "%02d:%02d:%02d",days, hours, mins);
+                //float minutes = value * 0.5f;
+                int hours = (int) (value / 60);
+                int mins = (int) (value % 60);
+                return String.format(Locale.getDefault(), "%02d:%02d", hours, mins);
             }
         });
 
@@ -160,14 +162,14 @@ public class SensorFragment extends Fragment {
     //this will tell the color we want.
     private int getColorForLabel(String label) {
         switch (label) {
-            case "sht31_temp":
-                return Color.RED;
             case "co2":
-                return Color.BLUE;
-            case "tvoc":
+                return Color.YELLOW;
+            case "height":
+                return Color.RED;
+            case "humidity":
                 return Color.GREEN;
-            case "sht31_humidity":
-                return Color.MAGENTA;
+            case "temperature":
+                return Color.CYAN;
             default: return Color.BLACK;
         }
     }

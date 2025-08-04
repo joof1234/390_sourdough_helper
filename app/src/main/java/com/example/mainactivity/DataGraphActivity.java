@@ -125,11 +125,12 @@ public class DataGraphActivity extends AppCompatActivity {
 //        }
 //    });
     }
-
+    //TODO: MAKE A DRILL DOWN ON THE GRAPHS TO CHOOSE PER DAY.
     private void setupTimestampTracker() {
         //get reference
         DatabaseReference deviceReadingsRef = FirebaseDatabase.getInstance()
-                .getReference("sensors/" + deviceMac);
+                .getReference("sensors/" + deviceMac + "/day_1");
+
         //track data changes on the database
         deviceReadingsRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -227,7 +228,7 @@ public class DataGraphActivity extends AppCompatActivity {
     private void resetDeviceData() {
         //get the database reference for the mac_address
         DatabaseReference deviceReadingsRef = FirebaseDatabase.getInstance()
-                .getReference("sensors/" + deviceMac);
+                .getReference("sensors/" + deviceMac + "/day_1");
 
         //ask the user the confirm delete
         new AlertDialog.Builder(this)

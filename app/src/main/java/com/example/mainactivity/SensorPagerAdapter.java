@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 public class SensorPagerAdapter extends FragmentStateAdapter {
 
     private final String deviceMac;
-    private final String[] tabTitles = {"Temperature", "CO₂", "TVOC", "Humidity"};
+    private final String[] tabTitles = {"CO₂","Temperature", "Humidity", "Height"};
 
     public SensorPagerAdapter(FragmentActivity fa, String deviceMac) {
         super(fa);
@@ -22,10 +22,11 @@ public class SensorPagerAdapter extends FragmentStateAdapter {
         switch (position) {
             //each chart has a number we decide, here is a layout.
             //this will create a new instance of charts each time you scroll to a new position.
-            case 0: return SensorFragment.newInstance(deviceMac, "sht31_temp", "°C");
-            case 1: return SensorFragment.newInstance(deviceMac, "co2", "ppm");
-            case 2: return SensorFragment.newInstance(deviceMac, "tvoc", "ppb");
-            case 3: return SensorFragment.newInstance(deviceMac, "sht31_humidity", "%");
+            case 0: return SensorFragment.newInstance(deviceMac, "co2", "ppm");
+            case 1: return SensorFragment.newInstance(deviceMac, "temperature", "°C");
+            case 2: return SensorFragment.newInstance(deviceMac, "humidity", "%");
+            case 3: return SensorFragment.newInstance(deviceMac, "height", "mm");
+
             default: return null;
         }
     }

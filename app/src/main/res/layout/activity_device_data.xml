@@ -9,8 +9,6 @@
     android:padding="16dp"
     tools:context=".DeviceDataActivity">
 
-    <!-- Toolbar -->
-
     <!-- Starter Name -->
     <TextView
         android:id="@+id/textViewStarterNameDashboard"
@@ -30,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="Feeding Instructions"
-        app:cornerRadius="20dp"
+        app:cornerRadius="0dp"
         app:iconPadding="12dp"
         style="@style/Widget.MaterialComponents.Button" />
 
@@ -39,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:cardCornerRadius="20dp"
+        app:cardCornerRadius="0dp"
         app:cardElevation="4dp"
         app:cardBackgroundColor="@color/card_background">
 
@@ -90,5 +88,55 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="View Graphed Data"
-        app:cornerRadius="20dp" />
+        app:cornerRadius="0dp" />
+
+    <!-- buttons for starting and stopping -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/device_data_start_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Start"
+            app:cornerRadius="0dp"
+            android:layout_margin="10dp"
+            app:iconPadding="12dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/green"
+            style="@style/Widget.MaterialComponents.Button" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/device_data_stop_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Stop"
+            app:cornerRadius="0dp"
+            android:layout_margin="10dp"
+            app:iconPadding="12dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/red"
+            style="@style/Widget.MaterialComponents.Button" />
+    </LinearLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/device_data_new_button"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start a new dough!"
+        android:backgroundTint="@color/darkpurple"
+        app:cornerRadius="0dp"
+        />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/device_data_new_day"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Next Day"
+        android:backgroundTint="@color/yelloworange"
+        app:cornerRadius="0dp"
+        />
 </LinearLayout>

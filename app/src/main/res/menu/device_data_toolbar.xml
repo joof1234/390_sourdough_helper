@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_setup_connection"
         android:orderInCategory="100"
-        android:title="Setup Connection"
+        android:title="Change WiFi"
         app:showAsAction="never" />
 
 
