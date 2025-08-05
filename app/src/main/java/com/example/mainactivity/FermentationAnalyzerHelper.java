@@ -70,9 +70,9 @@ public class FermentationAnalyzerHelper {
             return ToFAdvice;
         }
 
-        if (growthFactor < 1.2f) {
+        if (growthFactor < 1.2) {
             ToFAdvice = "Starter hasn’t grown much. Consider checking the temperature or feeding starter.";
-        } else if (growthFactor < 2.0f) {
+        } else if (growthFactor < 2.0) {
             ToFAdvice = "Starter is growing !";
         } else {
             ToFAdvice = "Your starter has doubled (or more) in size!";
@@ -97,6 +97,39 @@ public class FermentationAnalyzerHelper {
             co2Stuff = "Very high buildup—possible jar pressure concerns (especially in sealed systems) and nearing full fermentation.";
 
         return co2Stuff;
+    }
+
+    public static boolean proceedToNextDay(float minCo2, float maxCo2, float initialToF, float currentToF, float avgTemp, float avgHumidity, int hoursElapsed) {
+
+        // Don't know what to do for getting real time (hours elapsed) something with timestamps??
+
+        float co2Growth = maxCo2 / minCo2;
+        float jarHeight = 195;
+        float heightGrowth = (jarHeight - currentToF) / (jarHeight - initialToF);
+
+        if(hoursElapsed >= 16) {
+            if(avgTemp < 24 || avgTemp > 28) {
+                String tempMsg = analyzeTemperature(avgTemp);
+                //send a notification using tempMsg with anthonys stuff
+            }
+            if(avgHumidity < 70 || avgHumidity > 85) {
+                String humidityMsg = analyzeHumidity(avgHumidity);
+                //send a notification using humidityMsg with anthonys stuff
+            }
+            if(co2Growth < 3.0) {
+                String co2Msg = analyzeCO2(maxCo2);
+                //send a notification using co2Msg with anthonys stuff
+            }
+            if(heightGrowth < 2.0) {
+                String heightMsg = analyzeToF(currentToF, initialToF);
+                //send a notification using heightMsg with anthonys stuff
+            }
+        }
+        // Decide if user should proceed to next day (after everyhting else that can affect the starter has been checked)
+        if(co2Growth >= 3.0f && heightGrowth >= 2.0f) {
+            return true;
+        }
+        return false;
     }
 
     /*
