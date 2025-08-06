@@ -26,26 +26,33 @@
         <activity
             android:name=".FeedingActivity"
             android:parentActivityName=".DeviceDataActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".DataGraphActivity"
             android:exported="false"
-            android:parentActivityName=".DeviceDataActivity" /> <!-- SINGLETOP PREVENTS LOSING DATA -->
+            android:parentActivityName=".DeviceDataActivity"
+            android:screenOrientation="portrait"/> <!-- SINGLETOP PREVENTS LOSING DATA -->
         <activity
             android:name=".DeviceDataActivity"
             android:exported="false"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".WiFiActivity"
             android:exported="false"
-            android:parentActivityName=".BluetoothActivity" />
+            android:parentActivityName=".BluetoothActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".BluetoothActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

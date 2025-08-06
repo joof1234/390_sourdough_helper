@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MainActivity</string>
+    <string name="app_name">Sourdough Helper</string>
     <string name="co2"> co2 </string>
     <string name="humidity"> humidity </string>
     <string name="temperature"> Temperature </string>
