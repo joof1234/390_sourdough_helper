@@ -73,31 +73,36 @@ public class WiFiActivity extends AppCompatActivity {
             String ssid = etSsid.getText().toString();
             String password = etPassword.getText().toString();
 
-            //if you are connected send.
             if (btSocket != null && btSocket.isConnected()) {
-                try {
-                    //send a data with delimter of |
-                    OutputStream out = btSocket.getOutputStream();
-                    out.write((ssid + "|" + password + "\n").getBytes());
+                new Thread(() -> {
+                    try {
+                        OutputStream out = btSocket.getOutputStream();
+                        out.write((ssid + "|" + password + "\n").getBytes());
 
-                    //get the feedback like a "connected message"
-                    InputStream in = btSocket.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    String response = reader.readLine();
+                        InputStream in = btSocket.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                        String response = reader.readLine();
 
-                    if (response != null && response.startsWith("WIFI_SUCCESS")) {
-                        //delimit everything.
-                        ip = response.split("\\|")[1];
-                        MacAddress = response.split("\\|")[2];
-                        finish = true;
-                        Toast.makeText(this, "Successfully connected to the internet!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Failed to configure WiFi", Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> {
+                            if (response != null && response.startsWith("WIFI_SUCCESS")) {
+                                try {
+                                    ip = response.split("\\|")[1];
+                                    MacAddress = response.split("\\|")[2];
+                                    finish = true;
+                                    Toast.makeText(this, "Successfully connected to WiFi!", Toast.LENGTH_SHORT).show();
+                                } catch (ArrayIndexOutOfBoundsException e) {
+                                    Toast.makeText(this, "Invalid response format", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(this, "Failed to configure WiFi", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (IOException e) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(this, "Connection error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
                     }
-                } catch (IOException e) {
-                    Toast.makeText(this, "Connection error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
+                }).start();
             } else {
                 Toast.makeText(this, "Not connected to device", Toast.LENGTH_SHORT).show();
             }

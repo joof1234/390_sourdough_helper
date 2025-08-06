@@ -5,14 +5,15 @@ import android.os.Bundle;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.icu.text.SimpleDateFormat;
-import android.os.Bundle;
-import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,28 +22,17 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,11 +42,16 @@ public class DataGraphActivity extends AppCompatActivity {
     private TextView tvDeviceMessage, tvDuration, tvStartTime, tvCurrentTime;
     private String deviceMac;
     private Button databaseReset;
+    private Spinner daySpinner;
+    private int selectedDay = 1; // Default to day 1
+    private ViewPager2 viewPager;
 
     // Variables to track timestamps
     private long firstTimestamp = -1;
     private long lastTimestamp = -1;
 
+    boolean first_open = true;
+    int current_day = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +61,11 @@ public class DataGraphActivity extends AppCompatActivity {
 
         //we are not using IP anymore. we use mac for database recognition
         deviceMac = getIntent().getStringExtra("DEVICE_MAC");
+        current_day = getIntent().getIntExtra("DAY",1);
+        selectedDay = current_day;
 
         //text views about which device is connected.
-        tvDeviceMessage = findViewById(R.id.device_msg);
+        tvDeviceMessage = findViewById(R.id.device_data_start_textview);
         tvDeviceMessage.setText("Device from " + deviceMac);
 
         tvStartTime = findViewById(R.id.data_start_time);
@@ -83,27 +80,36 @@ public class DataGraphActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabLayout);
 
         //the adapter is each different charts, give the mac address
-        SensorPagerAdapter adapter = new SensorPagerAdapter(this, deviceMac);
+        SensorPagerAdapter adapter = new SensorPagerAdapter(this, deviceMac, selectedDay);
         viewPager.setAdapter(adapter);
 
         //the tabs are used to navigate between charts.
+        SensorPagerAdapter finalAdapter = adapter;
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            tab.setText(adapter.getTabTitle(position));
+            tab.setText(finalAdapter.getTabTitle(position));
         }).attach();
 
-        //reset button, resets the data on the
-        databaseReset = findViewById(R.id.db_reset);
-        databaseReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    resetDeviceData();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(DataGraphActivity.this, "Error Resetting Data", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        //TODO: WHEN CYCLING THROUGH THE TABS AND CHANGING THE DAY FOR THE FIRST TIME, IT DOESNT WORK
+        // YOU MUST RECHANGE THE DAY TO MAKE EACH TAB CHANGE
+        // OR PRESS A TAB FIRST THEN CHANGE THE DAY.
+        // MAKE IT SO THAT IT CHANGES TO THE DAY AUTMATICALLY TO AVOID ISSUES?
+        // BUT THIS DOESNT NECESSARILY FIX IT YOU STILL NEED TO BE CONSISTENT AND AVOID CHANGING TABS FIRST TO  CHANGE DAY PROPERLY
+        daySpinner = findViewById(R.id.daySpinner);
+        setupDaySpinner();
+
+        // Modify viewPager initialization
+        viewPager = findViewById(R.id.viewPager);
+        adapter = new SensorPagerAdapter(this, deviceMac, selectedDay);
+        viewPager.setAdapter(adapter);
+
+//        //reset button, resets the data on the
+//        databaseReset = findViewById(R.id.db_reset);
+//        databaseReset.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                resetDeviceData();
+//            }
+//        });
 //        //database test move later
 //        mDatabase = FirebaseDatabase.getInstance().getReference("sensors/" + deviceMac);
 //        mDatabase.addValueEventListener(new ValueEventListener() {
@@ -131,14 +137,106 @@ public class DataGraphActivity extends AppCompatActivity {
 //    });
     }
 
+
+    //TODO: MAKE A DRILL DOWN ON THE GRAPHS TO CHOOSE PER DAY.
+
+    private void setupDaySpinner() {
+        try {
+            DatabaseReference deviceRef = FirebaseDatabase.getInstance()
+                    .getReference("sensors/" + deviceMac);
+
+            deviceRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    List<String> days = new ArrayList<>();
+
+                    for (int day = 1; day <= 7; day++) {
+                        if (snapshot.child("day_" + day).exists()) {
+                            days.add("Day " + day);
+                        }
+                    }
+
+                    if (days.isEmpty()) {
+                        days.add("No data available");
+                        daySpinner.setEnabled(false);
+                    }
+
+
+
+                    ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                            DataGraphActivity.this,
+                            android.R.layout.simple_spinner_item,
+                            days);
+
+
+
+                    spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    daySpinner.setAdapter(spinnerAdapter);
+
+
+
+                    // Add this spinner selection listener
+                    daySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            // Extract day number from "Day X" string
+                            if (first_open){
+                                selectedDay = current_day;
+                                int spinnerPosition = spinnerAdapter.getPosition("Day " + current_day);
+                                daySpinner.setSelection(spinnerPosition);
+                                first_open = false;
+                            }else{
+                                String selected = (String) parent.getItemAtPosition(position);
+                                selectedDay = Integer.parseInt(selected.replace("Day ", ""));
+                            }
+
+                            refreshDataForSelectedDay();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                            // Do nothing
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(DataGraphActivity.this, "Error checking days", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
+            Log.e("SpinnerError", "Error setting up spinner", e);
+            Toast.makeText(this, "Error initializing day selection", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void refreshDataForSelectedDay() {
+
+        // Refresh timestamp tracking
+        setupTimestampTracker();
+
+        // Notify all fragments to refresh their data
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            if (fragment instanceof SensorFragment) {
+                ((SensorFragment) fragment).refreshData(selectedDay);
+            }
+        }
+    }
     private void setupTimestampTracker() {
         //get reference
         DatabaseReference deviceReadingsRef = FirebaseDatabase.getInstance()
-                .getReference("sensors/" + deviceMac);
+                .getReference("sensors/" + deviceMac + "/day_" + selectedDay);
+
         //track data changes on the database
         deviceReadingsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    tvStartTime.setText("No data available for Day " + selectedDay);
+                    tvCurrentTime.setText("N/A");
+                    tvDuration.setText("N/A");
+                    return;
+                }
                 firstTimestamp = -1;
                 lastTimestamp = -1;
                 //fetch the data, if it was reset, you will be able to see it is resetted.
@@ -232,7 +330,7 @@ public class DataGraphActivity extends AppCompatActivity {
     private void resetDeviceData() {
         //get the database reference for the mac_address
         DatabaseReference deviceReadingsRef = FirebaseDatabase.getInstance()
-                .getReference("sensors/" + deviceMac);
+                .getReference("sensors/" + deviceMac + "/day_1");
 
         //ask the user the confirm delete
         new AlertDialog.Builder(this)

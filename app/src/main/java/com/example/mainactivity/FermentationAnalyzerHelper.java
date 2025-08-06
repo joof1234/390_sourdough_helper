@@ -1,7 +1,5 @@
 package com.example.mainactivity;
 
-import com.google.firebase.logger.Logger;
-
 public class FermentationAnalyzerHelper {
 
     /**
@@ -156,7 +154,7 @@ public class FermentationAnalyzerHelper {
     ERROR HANDLING:
     -portrait mode issue. When you decide to rotate your phone, your app will rotate and mess up the entire UI.
     Make sure you can lock the entire app to just portrait mode to avoid this issue.
-    Serach up ways to make an app unbreakable.
+    Search up ways to make an app unbreakable.
     - Maybe you should try to break it using what people said.
     - For example, if you press many buttons at the same time, does it crash?
     - If you spam things really really fast, will it crash? How can we fix this?

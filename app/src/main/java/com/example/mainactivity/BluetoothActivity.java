@@ -2,6 +2,7 @@ package com.example.mainactivity;
 
 import static androidx.core.text.HtmlCompat.fromHtml;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -36,6 +37,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NavUtils;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,17 +69,22 @@ public class BluetoothActivity extends AppCompatActivity {
     Button btnScan, btnSend, complete;
     ListView lvDevices;
     private boolean connected = false;
+    private String mac_address = null;
+    private volatile boolean keepReading = true; // Control flag
 
+    private String response = null;
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
 
         btnScan = findViewById(R.id.btnScan);
-//      btnSend = findViewById(R.id.btnSend);
         complete = findViewById(R.id.complete_bluetooth);
         lvDevices = findViewById(R.id.lvDevices);
         tvStatus = findViewById(R.id.tvStatus);
+
 
         //bluetooth setup
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -92,73 +104,57 @@ public class BluetoothActivity extends AppCompatActivity {
         }
 
         //get the list of devices
-        deviceList= new ArrayList<>();
+        deviceList = new ArrayList<>();
         deviceAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, deviceList);
         lvDevices.setAdapter(deviceAdapter);
 
         //scan the devices around
         btnScan.setOnClickListener(v -> {
-            try {
-                if (checkBluetoothPermissions()) {
-                    scanDevices();
-                }
-            } catch(Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Failed to scan devices", Toast.LENGTH_SHORT).show();
+            if (checkBluetoothPermissions()) {
+                scanDevices();
             }
         });
 
         //COMPLETE button
         complete.setOnClickListener(v -> {
-            try {
-                if (connected) {
-                    Intent intent = new Intent(BluetoothActivity.this, WiFiActivity.class);
+            if (connected){
+                if (mac_address == null){
+                    Intent intent = new Intent (BluetoothActivity.this, WiFiActivity.class);
                     startActivity(intent);
-                } else {
-                    Toast.makeText(this, "Connect to a device first!", Toast.LENGTH_SHORT).show();
+                }else {
+                    Intent intent = new Intent (BluetoothActivity.this, MainActivity.class);
+                    intent.putExtra("ESP32_MAC", mac_address);
+                    intent.putExtra("ESP32_IP", "NONE");
+                    startActivity(intent);
                 }
-            } catch(Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Failed to complete connection to device", Toast.LENGTH_SHORT).show();
+
+            } else {
+                Toast.makeText(this, "Connect to a device first!", Toast.LENGTH_SHORT).show();
             }
         });
 
         //the list itself
         lvDevices.setOnItemClickListener((parent, view, position, id) -> {
             if (checkBluetoothPermissions()) {
+                String deviceInfo = deviceList.get(position);
+                String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
+
                 try {
-                    String deviceInfo = deviceList.get(position);
-                    String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
-                        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
-                        connectToDevice(device);
-                        String deviceName;
-                        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
-                            deviceName = device.getName();
-                        } else {
-                            deviceName = "Unknown Device";
-                        }
-                        tvStatus.setText("Connecting to " + deviceName);
-//                      btnSend.setEnabled(true);
+                    BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
+                    connectToDevice(device);
+                    String deviceName;
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+                        deviceName = device.getName();
+                    } else {
+                        deviceName = "Unknown Device";
+                    }
+                    tvStatus.setText("Attempting Connection...");
                 } catch (IllegalArgumentException e) {
-                        tvStatus.setText("Invalid device address");
+                    tvStatus.setText("Invalid device address");
                 }
             }
         });
 
-        //Send data and try to connect
-//        btnSend.setOnClickListener(v -> {
-//            if (bluetoothSocket != null && bluetoothSocket.isConnected()) {
-//                try {
-//                    String message = "Hello ESP32!\n";
-//                    outputStream.write(message.getBytes(StandardCharsets.UTF_8));
-//                    outputStream.flush();
-//                    //confirmation
-//                    tvStatus.setText("Message sent: " + message);
-//                } catch (IOException e) {
-//                    tvStatus.setText("Error sending message");
-//                }
-//            }
-//        });
     }
 
     //check if user can use bluetooth
@@ -184,7 +180,7 @@ public class BluetoothActivity extends AppCompatActivity {
             pairedDevices = bluetoothAdapter.getBondedDevices();
             deviceList.clear();
             for (BluetoothDevice device : pairedDevices) {
-                if (device.getName().toLowerCase().contains("esp")){
+                if (device.getName().contains("ESP32")){
                     deviceList.add(device.getName() + "\n" + device.getAddress());
                 }
             }
@@ -195,8 +191,63 @@ public class BluetoothActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Bluetooth is not enabled", Toast.LENGTH_SHORT).show();
         }
     }
+    private void checkFirebaseForDevice(String deviceMac) {
+        System.out.println("CHECKING FOR FIREBASE COMPARISON");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference sensorsRef = database.getReference("sensors");
+
+        // Query all sensors where General/BT_ADDRESS matches our device MAC
+        sensorsRef.orderByChild("general/bt_address").equalTo(deviceMac).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            // Device found in Firebase
+                            for (DataSnapshot sensorSnapshot : dataSnapshot.getChildren()) {
+                                // Get the General node
+                                DataSnapshot generalSnapshot = sensorSnapshot.child("general");
+
+                                // Verify the device is enabled
+                                Boolean enabled = generalSnapshot.child("enabled").getValue(Boolean.class);
+                                if (enabled != null && !enabled) {
+                                    runOnUiThread(() -> {
+                                        tvStatus.setText("Device disabled: " + deviceMac);
+                                        connected = false;
+                                    });
+                                    return;
+                                }
+
+                                // Get device name
+                                String deviceName = generalSnapshot.child("name").getValue(String.class);
+                                // Get device name
+                                String deviceWIFIMAC = generalSnapshot.child("mac_address").getValue(String.class);
+
+                                runOnUiThread(() -> {
+                                    mac_address = deviceWIFIMAC;
+                                    String status = "Verified: " + (deviceName != null ? deviceName : "Unknown Device");
+                                    tvStatus.setText(status);
+                                });
+                                return;
+                            }
+                        }
+
+                        runOnUiThread(() -> {
+                            tvStatus.setText("Device not registered: " + deviceMac);
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        runOnUiThread(() -> {
+                            tvStatus.setText("Firebase error: " + databaseError.getMessage());
+                            connected = false;
+                        });
+                    }
+                });
+    }
 
     //connect to the bluetooth device
+    @SuppressLint("SetTextI18n")
     private void connectToDevice(BluetoothDevice device) {
         new Thread(() -> {
             try {
@@ -211,6 +262,7 @@ public class BluetoothActivity extends AppCompatActivity {
                 outputStream = bluetoothSocket.getOutputStream();
 
                 BluetoothConnectionManager.getInstance().setSocket(bluetoothSocket);
+                final String deviceMac = device.getAddress();
 
                 //add the distance reading receiver
                 InputStream inputStream = bluetoothSocket.getInputStream();
@@ -218,24 +270,9 @@ public class BluetoothActivity extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     tvStatus.setText("Connected to " + device.getName());
-//                    btnSend.setEnabled(true);
                     connected = true;
                 });
-
-//                //continuous reading loop for TESTING ONLY
-//                while (true) {
-//                    try {
-//                        String distanceData = reader.readLine();
-//                        runOnUiThread(() -> {
-//                            tvStatus.setText("Distance: " + distanceData);
-//                        });
-//                    } catch (IOException e) {
-//                        runOnUiThread(() -> {
-//                            tvStatus.setText("Disconnected");
-//                        });
-//                        break;
-//                    }
-//                }
+                checkFirebaseForDevice(deviceMac);
 
             } catch (IOException e) {
                 runOnUiThread(() -> {
@@ -263,9 +300,10 @@ public class BluetoothActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     //check if ur allowed to connect
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_BLUETOOTH_PERMISSIONS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -287,5 +325,6 @@ public class BluetoothActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 }

@@ -76,7 +76,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:paddingStart="16dp"
-            android:textSize="30dp"
+            android:textSize="15dp"
             android:text=""
             android:textColor="@color/charcoal" />
     </LinearLayout>
