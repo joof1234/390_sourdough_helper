@@ -1,11 +1,14 @@
 package com.example.mainactivity;
 
+import static android.text.style.TtsSpan.ARG_DAY;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -34,15 +37,18 @@ public class SensorFragment extends Fragment {
     private static final String ARG_UNIT = "field_unit";
     private LineChart chart;
     private DatabaseReference dbRef;
+    private int currentDay;
+    private TextView tvNoData;
+    private static final float MAX_HEIGHT = 180.0f; // Adjust this value as needed
 
-    public static SensorFragment newInstance(String deviceMac, String fieldName, String unit) {
+
+    public static SensorFragment newInstance(String deviceMac, String fieldName, String unit, int day) {
         SensorFragment fragment = new SensorFragment();
-        //make a bundle to get the data across functions
-        //called when we are making a new chart
         Bundle args = new Bundle();
         args.putString(ARG_MAC, deviceMac);
         args.putString(ARG_FIELD, fieldName);
         args.putString(ARG_UNIT, unit);
+        args.putInt(ARG_DAY, day);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,10 +57,18 @@ public class SensorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sensor, container, false);
         chart = view.findViewById(R.id.chart);
+        currentDay = getArguments().getInt(ARG_DAY, 1);
+        tvNoData = view.findViewById(R.id.tvNoData); // Initialize the no data text
 
         //this class is based on making the chart. this is for each sensor.
         setupChart();
         return view;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        //make sure to refresh twith the right data
+        setupChart();
     }
 
     private void setupChart() {
@@ -66,13 +80,22 @@ public class SensorFragment extends Fragment {
         //TODO: MAKE SURE YOU CAN CYCLE PER DAY, AND DECTECT THE DAY YOU ARE REPRESENTING ON THE CHARTS.
         // DRILLDOWN REQUIRED>
         //get the database
-        dbRef = FirebaseDatabase.getInstance().getReference("sensors/" + deviceMac + "/day_1");
+        dbRef = FirebaseDatabase.getInstance().getReference("sensors/" + deviceMac + "/day_" + currentDay);
         //when a new value is added to the database, to that specific device,
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Entry> entries = new ArrayList<>();
+                if (!snapshot.exists()) {
+                    // No data available for this day
+                    showNoDataMessage();
+                    return;
+                }
+
                 for (DataSnapshot child : snapshot.getChildren()) {
+                    if (child.getKey().equals("start_data")) {
+                        continue; // Skip the start node
+                    }
                     //the values may vary so here we can manage it.
                     Object value = child.child(fieldName).getValue();
                     Long timestamp = child.child("timestamp").getValue(Long.class);
@@ -91,12 +114,26 @@ public class SensorFragment extends Fragment {
                         } else if (value instanceof Float) {
                             floatValue = (Float) value;
                         }
+                        // Special handling for height data
+                        if (fieldName.equals("height")) {
+                            floatValue = ((MAX_HEIGHT - floatValue) / 10.0f);
+                            floatValue = Math.round(floatValue * 10) / 10.0f;
+                        }else{
+
+                        }
+
                         entries.add(new Entry(entries.size(), floatValue));
                     }
                 }
-                //send the new values.
-                //updates each time there is a new value added to database.
-                updateChart(entries, fieldName, unit);
+
+                if (entries.isEmpty()) {
+                    showNoDataMessage();
+                } else {
+                    hideNoDataMessage();
+                    //send the new values.
+                    //updates each time there is a new value added to database.
+                    updateChart(entries, fieldName, unit);
+                }
             }
 
             //error handling.
@@ -106,6 +143,27 @@ public class SensorFragment extends Fragment {
             }
         });
     }
+
+    private void showNoDataMessage() {
+        chart.setVisibility(View.GONE);
+        tvNoData.setVisibility(View.VISIBLE);
+    }
+
+    private void hideNoDataMessage() {
+        chart.setVisibility(View.VISIBLE);
+        tvNoData.setVisibility(View.GONE);
+    }
+    public void refreshData(int day) {
+        currentDay = day;
+        Bundle args = getArguments();
+        if (args != null) {
+            args.putInt(ARG_DAY, day);
+        }
+
+        // Force a refresh by reattaching the listener
+        setupChart();
+    }
+
     //update function
     private void updateChart(List<Entry> entries, String label, String unit) {
         LineDataSet dataSet = new LineDataSet(entries, label + " (" + unit + ")");
@@ -114,9 +172,13 @@ public class SensorFragment extends Fragment {
         dataSet.setDrawCircles(false);              //hides the dots
         //dataSet.setCircleRadius(4f);              //you can have dots, now no need.
         dataSet.setLineWidth(1f);                   //line width
+        // Add these lines to disable value drawing
+        dataSet.setDrawValues(false); // This hides the numbers above points
+        dataSet.setHighlightEnabled(false); // Optional: disables highlighting on touch
 
         //setup the chart with the data
         LineData lineData = new LineData(dataSet);
+
 
         //x axis details
         XAxis xAxis = chart.getXAxis();
@@ -156,14 +218,13 @@ public class SensorFragment extends Fragment {
         chart.setExtraBottomOffset(30f);
         chart.invalidate();
 
-
     }
 
     //this will tell the color we want.
     private int getColorForLabel(String label) {
         switch (label) {
             case "co2":
-                return Color.YELLOW;
+                return Color.GRAY;
             case "height":
                 return Color.RED;
             case "humidity":

@@ -16,7 +16,7 @@
         android:text="This page contains the data of your sourdough from the device itself."/>
 
     <TextView
-        android:id="@+id/device_msg"
+        android:id="@+id/device_data_start_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="From the device: "
@@ -57,14 +57,25 @@
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="300dp" />-->
 
-    <Button
+<!--    <Button-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/db_reset"-->
+<!--        android:text="Reset Data values"-->
+<!--        android:layout_marginBottom="10dp"-->
+<!--        app:cornerRadius="20dp"-->
+<!--        app:iconPadding="12dp"/>-->
+
+    <Spinner
+        android:id="@+id/daySpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/db_reset"
-        android:text="Reset Data values"
-        android:layout_marginBottom="10dp"
-        app:cornerRadius="20dp"
-        app:iconPadding="12dp"/>
+        android:layout_margin="16dp"
+        android:minHeight="48dp"
+        style="@style/Widget.AppCompat.Spinner"
+        android:spinnerMode="dropdown"
+        android:background="@drawable/spinner_background"
+        android:popupBackground="@android:color/white"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"

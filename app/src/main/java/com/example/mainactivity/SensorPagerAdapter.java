@@ -8,13 +8,18 @@ public class SensorPagerAdapter extends FragmentStateAdapter {
 
     private final String deviceMac;
     private final String[] tabTitles = {"CO₂","Temperature", "Humidity", "Height"};
-
-    public SensorPagerAdapter(FragmentActivity fa, String deviceMac) {
+    private int currentDay;
+    public SensorPagerAdapter(FragmentActivity fa, String deviceMac, int day) {
         super(fa);
         //this class is the one to handle the different charts you can display. Not the chart itself
         //only the one who controls which chart is shown.
         //we are passed the mac device so that the actual chart can grab data.
         this.deviceMac = deviceMac;
+        this.currentDay = day;
+    }
+    public void setDay(int day) {
+        this.currentDay = day;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -22,13 +27,22 @@ public class SensorPagerAdapter extends FragmentStateAdapter {
         switch (position) {
             //each chart has a number we decide, here is a layout.
             //this will create a new instance of charts each time you scroll to a new position.
-            case 0: return SensorFragment.newInstance(deviceMac, "co2", "ppm");
-            case 1: return SensorFragment.newInstance(deviceMac, "temperature", "°C");
-            case 2: return SensorFragment.newInstance(deviceMac, "humidity", "%");
-            case 3: return SensorFragment.newInstance(deviceMac, "height", "mm");
+            case 0: return SensorFragment.newInstance(deviceMac, "co2", "ppm", currentDay);
+            case 1: return SensorFragment.newInstance(deviceMac, "temperature", "°C", currentDay);
+            case 2: return SensorFragment.newInstance(deviceMac, "humidity", "%", currentDay);
+            case 3: return SensorFragment.newInstance(deviceMac, "height", "cm", currentDay);
 
             default: return null;
         }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return (deviceMac + position + currentDay).hashCode();
+    }
+    @Override
+    public boolean containsItem(long itemId) {
+        return true;
     }
 
     @Override
