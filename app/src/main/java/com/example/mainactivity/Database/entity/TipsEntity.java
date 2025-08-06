@@ -9,7 +9,7 @@ public class TipsEntity {
 
     //TODO: public enum for conditions, declare in fermetationanalyzerhelper
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     private int id;
     @ColumnInfo(name = "condition")
     private String condition; //default, temp, humidity, day 7, day 7+
@@ -18,7 +18,7 @@ public class TipsEntity {
 
     //constructor
     public TipsEntity(int id, String condition, String tip) {
-        this.id = id; // pass 0 to auto-generate
+        this.id = id;
         this.condition = condition;
         this.tip = tip;
     }

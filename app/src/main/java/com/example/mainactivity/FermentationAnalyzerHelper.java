@@ -109,21 +109,25 @@ public class FermentationAnalyzerHelper {
             if(avgTemp < 24 || avgTemp > 28) {
                 String tempMsg = analyzeTemperature(avgTemp);
                 //send a notification using tempMsg with anthonys stuff
+                //TODO
             }
             if(avgHumidity < 70 || avgHumidity > 85) {
                 String humidityMsg = analyzeHumidity(avgHumidity);
                 //send a notification using humidityMsg with anthonys stuff
+                //TODO
             }
             if(co2Growth < 3.0) {
                 String co2Msg = analyzeCO2(maxCo2);
                 //send a notification using co2Msg with anthonys stuff
+                //TODO
             }
             if(heightGrowth < 2.0) {
                 String heightMsg = analyzeToF(currentToF, initialToF);
                 //send a notification using heightMsg with anthonys stuff
+                //TODO
             }
         }
-        // Decide if user should proceed to next day (after everyhting else that can affect the starter has been checked)
+        // Decide if user should proceed to next day (after everything else that can affect the starter has been checked)
         if(co2Growth >= 3.0f && heightGrowth >= 2.0f) {
             return true;
         }

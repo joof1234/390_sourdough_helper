@@ -35,6 +35,7 @@ public class DeviceDataActivity extends AppCompatActivity {
     private TextView tvmaxhumidity, tvmaxco2, tvmaxtemperature, tvmaxheight;
     //general info textviews
     private TextView tvhours, tvday, tvready, tvstartername;
+
     private float max_humidity, max_co2, max_temperature, max_height;
     private String deviceName = "Missing name!";
     private String deviceIp, deviceMac;
@@ -95,6 +96,16 @@ public class DeviceDataActivity extends AppCompatActivity {
         btnStart = findViewById(R.id.device_data_start_button);
         btnNew = findViewById(R.id.device_data_new_button);
         //btnNextDay = findViewById(R.id.device_data_new_day);
+
+//        //set device name from firebase
+//        databaseReference.child("general").child("device_name").get().addOnCompleteListener(task -> {
+//            if (task.isSuccessful()) {
+//                String deviceName = task.getResult().getValue(String.class);
+//                tvstartername.setText(deviceName);
+//            } else {
+//                //cant retrieve name
+//            }
+//        });
 
         btnStart.setOnClickListener(v -> {
             databaseReference.child("general").child("current_day").get().addOnCompleteListener(task -> {
@@ -284,7 +295,7 @@ public class DeviceDataActivity extends AppCompatActivity {
                                     fetchMaxData(currentDay);
                                     setupTimestampTracker();
                                     checkEnabled();
-                                    databaseReference.child("general").child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    databaseReference.child("general").child("device_name").addListenerForSingleValueEvent(new ValueEventListener() {
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()) {
                                                 deviceName = snapshot.getValue(String.class);
@@ -466,6 +477,15 @@ public class DeviceDataActivity extends AppCompatActivity {
         else if (item.getItemId() == R.id.action_setup_connection){
             Intent intent = new Intent(DeviceDataActivity.this, BluetoothActivity.class);
             startActivity(intent);
+            return true;
+        }
+        else if (item.getItemId() == R.id.action_rename_device){
+            //open dialog fragment to rename device
+            DeviceNameDialogFragment deviceNameDialogFragment = new DeviceNameDialogFragment();
+            Bundle args = new Bundle();
+            args.putString("MAC", deviceMac);
+            deviceNameDialogFragment.setArguments(args);
+            deviceNameDialogFragment.show(getSupportFragmentManager(), "DeviceNameDialogFragment");
             return true;
         }
         return super.onOptionsItemSelected(item);

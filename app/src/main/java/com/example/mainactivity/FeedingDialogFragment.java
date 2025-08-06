@@ -86,7 +86,7 @@ public class FeedingDialogFragment extends DialogFragment {
 
         //set text for views here from local sql database
         //REQUIREMENTS
-        infoEntity = new AtomicReference<>(db.infoDao().getInfoByDay(0));
+        infoEntity = new AtomicReference<>(db.infoDao().getInfoByDay(10)); //day = 10 to set requirements
         textViewRequirements.setText(infoEntity.get().getInfo());
 
         //INSTRUCTIONS
@@ -102,9 +102,9 @@ public class FeedingDialogFragment extends DialogFragment {
                         textviewStatus.setVisibility(VISIBLE);
                     }
                     //check if day progress is null + fix it
-                    if (currentDay == null) currentDay = 0;
+                    if (currentDay == null) currentDay = 0; //error state
                     int day = currentDay;
-                    if (day < 0) day = 0;
+                    if (day < 0) day = 0; //error state
                     if (day > 7) day = 8;
                     Toast.makeText(getContext(),"Currently Day: " + currentDay, Toast.LENGTH_SHORT).show();
 
@@ -143,9 +143,9 @@ public class FeedingDialogFragment extends DialogFragment {
                             String dayProgress = dataSnapshot.getValue(String.class);
 
                             //check if day progress is null + fix it
-                            if (dayProgress == null) dayProgress = "0";
+                            if (dayProgress == null) dayProgress = "0"; //error state
                             int day = Integer.parseInt(dayProgress);
-                            if (day < 0) day = 0;
+                            if (day < 0) day = 0; //error state
                             if (day > 7) day = 8;
 
                             //update day progress in firebase
@@ -181,7 +181,7 @@ public class FeedingDialogFragment extends DialogFragment {
     }
 
     private boolean ready_status() {
-
+        //TODO: always returns false atm, implement algorithm here
         boolean ready = false;
 
         return ready;
@@ -190,7 +190,9 @@ public class FeedingDialogFragment extends DialogFragment {
     private void setup_spinner() {
         List<String> days = new ArrayList<>();
 
-        for (int day = 0; day <= 8; day++) {
+        // Add days from 1 to 8 to the list
+        // day 0 is used in the database to store the starter requirements, so don't include it here
+        for (int day = 1; day <= 8; day++) {
             days.add("Day " + day);
         }
 
@@ -211,11 +213,13 @@ public class FeedingDialogFragment extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selected = (String) parent.getItemAtPosition(position);
+                //feeding instructions open to current day
                 if (first_open){
                     selectedDay = currentDay;
                     int spinnerPosition = spinnerAdapter.getPosition("Day " + currentDay);
                     day_spinner.setSelection(spinnerPosition);
                     first_open = false;
+                    //after day 7+, disable the feeding button
                     if (currentDay == 8){
                         buttonStarterFed.setVisibility(GONE);
                         textviewStatus.setVisibility(GONE);
@@ -226,6 +230,7 @@ public class FeedingDialogFragment extends DialogFragment {
                     System.out.println("WE ARE CURRENTLY SELECTING DAY: " + selectedDay + " WITH ID: " + day_spinner.getSelectedItemPosition());
                 }
 
+                //check if feeding conditions have been met, if yes: enable button, otherwise: disable button
                 if (ready_status()){
                     textviewStatus.setText("Ready for Day " + (currentDay + 1) + " ! Check the instructions!");
                     if (currentDay == day_spinner.getSelectedItemPosition()){

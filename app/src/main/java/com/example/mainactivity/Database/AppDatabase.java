@@ -11,7 +11,7 @@ import com.example.mainactivity.Database.dao.TipsDao;
 import com.example.mainactivity.Database.entity.InfoEntity;
 import com.example.mainactivity.Database.entity.TipsEntity;
 
-@Database(entities = {InfoEntity.class, TipsEntity.class}, version = 1)
+@Database(entities = {InfoEntity.class, TipsEntity.class}, version = 4, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static volatile AppDatabase INSTANCE;
     private static final String DATABASE_NAME = "app_database";
@@ -20,7 +20,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     //creates the database
     private static AppDatabase create(Context context) {
-        return Room.databaseBuilder(context, AppDatabase.class, DATABASE_NAME).allowMainThreadQueries().build();
+        return Room.databaseBuilder(context, AppDatabase.class, DATABASE_NAME).allowMainThreadQueries().fallbackToDestructiveMigration().build();
     }
 
     public static synchronized AppDatabase getInstance(Context context) {
