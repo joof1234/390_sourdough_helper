@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import androidx.appcompat.app.ActionBar;
@@ -88,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
         deviceAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, connectedDevices);
         lvDevices.setAdapter(deviceAdapter);
 
+        //database sensors right now.
+        //addConnectedDevice("1","EC:E3:34:D1:60:7C");
+        //addConnectedDevice("1", "EC:E3:34:01:08:25");
+        //addConnectedDevice("1","EC:E3:34:22:07:25");
+
         //setup action bar
         if (getSupportActionBar() != null) {
             ActionBar actionBar = getSupportActionBar();
@@ -98,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         lvDevices.setOnItemClickListener((parent, view, position, id) -> {
+
+            // Add try catch block here
             String deviceInfo = connectedDevices.get(position);
             String deviceIp = deviceInfo.split(" - ")[1]; // Extract IP from display string
             String deviceMac = deviceInfo.split(" - ")[2]; //get the mac address
@@ -110,13 +118,23 @@ public class MainActivity extends AppCompatActivity {
 
         Button btnAddDevice = findViewById(R.id.gotobluetooth);
         btnAddDevice.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
-            startActivity(intent);
+            try {
+                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to go to bluetooth activity", Toast.LENGTH_SHORT).show();
+            }
         });
 
         Button btnReset = findViewById(R.id.reset_button);
         btnReset.setOnClickListener(v -> {
-            clearConnectedDevices();
+            try {
+                clearConnectedDevices();
+            } catch(Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to clear all connected devices.", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -138,7 +156,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addConnectedDevice(String ip, String Mac) {
-        String deviceInfo = "ESP32 Device - " + ip + " - " + Mac;
+        String deviceInfo = "ESP32 Device - " + "0.0" + " - " + Mac;
+        //String deviceInfo = "ESP32 Device - " + "0.0" + " - " + "EC:E3:34:01:08:25";
+        //String deviceInfo = "ESP32 Device - " + "0.0" + " - " + "EC:E3:34:22:07:25";
+
         if (!connectedDevices.contains(deviceInfo)) {
             connectedDevices.add(deviceInfo);
             saveConnectedDevices();
