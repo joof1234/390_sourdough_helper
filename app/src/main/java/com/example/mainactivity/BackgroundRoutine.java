@@ -15,12 +15,14 @@ public class BackgroundRoutine extends Worker{
         //TODO: Firebase polling for data
         //Need temp variable from Firebase
         //Need humidity variable from Firebase
-        String tempAdvice;
+
+        Context context = getApplicationContext();
+        NotificationHelper notificationHelper = new NotificationHelper(context);
         if(temp < 24 || temp > 28)
-            Alert_Temperature();
+            notificationHelper.Alert_Temperature();
 
         if(humidity < 70 || humidity > 85)
-            Alert_Humidity();
+            notificationHelper.Alert_Humidity();
 
         return Result.success();
     }
