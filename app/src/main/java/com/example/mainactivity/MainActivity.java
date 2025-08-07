@@ -2,6 +2,7 @@ package com.example.mainactivity;
 
 import static androidx.core.text.HtmlCompat.fromHtml;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -25,6 +26,15 @@ import com.example.mainactivity.Database.entity.TipsEntity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.Data;
 
 public class MainActivity extends AppCompatActivity {
     private ListView lvDevices;
@@ -45,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
         //db.infoDao().deleteAllInfo();
         //db.tipsDao().deleteAllTips();
         populateLocalDatabase();
+
+        Context context = getApplicationContext();
+        PeriodicWorkRequest notificationWorkRequest = new PeriodicWorkRequest.Builder(BackgroundRoutine.class, 2, TimeUnit.MINUTES).build();
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                "BackgroundNotifications",
+                ExistingPeriodicWorkPolicy.KEEP,
+                notificationWorkRequest
+        );
     }
 
     //TODO: NOTIFICATIONS

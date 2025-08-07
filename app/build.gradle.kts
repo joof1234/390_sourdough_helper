@@ -43,9 +43,13 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.google.firebase.database)
+    implementation(libs.work.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     annotationProcessor(libs.room.compiler)
+    implementation (libs.core.ktx)
+    implementation(libs.appcompat.v161)
+    implementation(libs.work.runtime.ktx)
 
 }
