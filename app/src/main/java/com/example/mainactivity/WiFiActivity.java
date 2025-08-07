@@ -12,14 +12,18 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NavUtils;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -37,7 +41,7 @@ public class WiFiActivity extends AppCompatActivity {
     private BluetoothSocket btSocket;
     boolean finish = false;
     private Button complete, btnSubmit;
-    String ip;
+    String ip, MacAddress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +50,7 @@ public class WiFiActivity extends AppCompatActivity {
         //setup action bar
         if (getSupportActionBar() != null) {
             ActionBar actionBar = getSupportActionBar();
-            //actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
             ColorDrawable colorDrawable = new ColorDrawable(getColor(R.color.primary_color));
             actionBar.setBackgroundDrawable(colorDrawable);
             actionBar.setTitle(fromHtml("WiFi Connection",getColor(R.color.on_primary_color)));
@@ -69,30 +73,36 @@ public class WiFiActivity extends AppCompatActivity {
             String ssid = etSsid.getText().toString();
             String password = etPassword.getText().toString();
 
-            //if you are connected send.
             if (btSocket != null && btSocket.isConnected()) {
-                try {
-                    //send a data with delimter of |
-                    OutputStream out = btSocket.getOutputStream();
-                    out.write((ssid + "|" + password + "\n").getBytes());
+                new Thread(() -> {
+                    try {
+                        OutputStream out = btSocket.getOutputStream();
+                        out.write((ssid + "|" + password + "\n").getBytes());
 
-                    //get the feedback like a "connected message"
-                    InputStream in = btSocket.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    String response = reader.readLine();
+                        InputStream in = btSocket.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                        String response = reader.readLine();
 
-                    if (response != null && response.startsWith("WIFI_SUCCESS")) {
-                        //delimit everything.
-                        ip = response.split("\\|")[1];
-                        finish = true;
-                        Toast.makeText(this, "Successfully connected to the internet!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Failed to configure WiFi", Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> {
+                            if (response != null && response.startsWith("WIFI_SUCCESS")) {
+                                try {
+                                    ip = response.split("\\|")[1];
+                                    MacAddress = response.split("\\|")[2];
+                                    finish = true;
+                                    Toast.makeText(this, "Successfully connected to WiFi!", Toast.LENGTH_SHORT).show();
+                                } catch (ArrayIndexOutOfBoundsException e) {
+                                    Toast.makeText(this, "Invalid response format", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(this, "Failed to configure WiFi", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (IOException e) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(this, "Connection error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
                     }
-                } catch (IOException e) {
-                    Toast.makeText(this, "Connection error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
+                }).start();
             } else {
                 Toast.makeText(this, "Not connected to device", Toast.LENGTH_SHORT).show();
             }
@@ -103,6 +113,7 @@ public class WiFiActivity extends AppCompatActivity {
             if (finish) {
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.putExtra("ESP32_IP", ip);
+                intent.putExtra("ESP32_MAC", MacAddress); //send MAC address
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
@@ -111,6 +122,24 @@ public class WiFiActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.wifi_toolbar, menu);
+        return true;
+    }
+
+    //options to select in the toolbar
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //first option is to sort students by id or surname
+        if (item.getItemId()== android.R.id.home){
+            //back button
+            NavUtils.navigateUpFromSameTask(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

@@ -6,42 +6,30 @@
     android:layout_height="match_parent"
     android:background="@color/background_color"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="5dp"
     tools:context=".DeviceDataActivity">
-
-    <!-- Toolbar -->
 
     <!-- Starter Name -->
     <TextView
-        android:id="@+id/textViewStarterNameDashboard"
+        android:id="@+id/device_data_starter_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+
         android:text="Starter Name"
         android:textAlignment="center"
         android:textColor="@color/primary_text"
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <!-- Feeding Instructions Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonFeedingInstructions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Feeding Instructions"
-        app:cornerRadius="20dp"
-        app:iconPadding="12dp"
-        style="@style/Widget.MaterialComponents.Button" />
-
     <!-- Card for Summary and Messages -->
+
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@color/card_background">
+        app:cardBackgroundColor="@color/card_background"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -58,37 +46,291 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/device_msg"
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@color/accent_color"
-                android:padding="16dp"
-                android:text="From the device:"
-                android:textColor="@color/on_secondary_color"
-                android:textSize="16sp" />
+                android:alpha="1"
+                android:background="@drawable/common_google_signin_btn_icon_dark_normal_background"
+                android:padding="8dp"
+                android:stretchColumns="*">
+
+                <!-- column names -->
+                <TableRow
+                    android:background="@color/green"
+                    android:divider="@color/black"
+                    android:showDividers="beginning|middle|end">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="Measurement"
+                        android:textColor="@color/on_primary_color"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="Start Data"
+                        android:textColor="@color/on_primary_color"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="Peak Data"
+                        android:textColor="@color/on_primary_color"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black" />
+                <!-- co2 -->
+                <TableRow
+                    android:divider="@color/black"
+                    android:showDividers="beginning|middle|end">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="CO2"
+                        android:textColor="@color/on_secondary_color" />
+
+                    <TextView
+                        android:id="@+id/device_data_start_co2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="400 ppm"
+                        android:textColor="@color/on_secondary_color" />
+
+                    <TextView
+                        android:id="@+id/device_data_max_co2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="1200 ppm"
+                        android:textColor="@color/on_secondary_color" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black" />
+                <!-- humidity -->
+                <TableRow
+                    android:divider="@color/black"
+                    android:showDividers="beginning|middle|end">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="Humidity"
+                        android:textColor="@color/on_secondary_color" />
+
+                    <TextView
+                        android:id="@+id/device_data_start_humidity"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="45%"
+                        android:textColor="@color/on_secondary_color" />
+
+                    <TextView
+                        android:id="@+id/device_data_max_humidity"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="85%"
+                        android:textColor="@color/on_secondary_color" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black" />
+                <!--temp -->
+                <TableRow
+                    android:divider="@color/black"
+                    android:showDividers="beginning|middle|end">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="Temperature"
+                        android:textColor="@color/on_secondary_color" />
+
+                    <TextView
+                        android:id="@+id/device_data_start_temp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="22°C"
+                        android:textColor="@color/on_secondary_color" />
+
+                    <TextView
+                        android:id="@+id/device_data_max_temp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="32°C"
+                        android:textColor="@color/on_secondary_color" />
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black" />
+                <!-- height -->
+                <TableRow
+                    android:divider="@color/black"
+                    android:showDividers="beginning|middle|end">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="Height"
+                        android:textColor="@color/on_secondary_color" />
+
+                    <TextView
+                        android:id="@+id/device_data_start_height"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="1.2m"
+                        android:textColor="@color/on_secondary_color" />
+
+                    <TextView
+                        android:id="@+id/device_data_max_height"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:text="2.5m"
+                        android:textColor="@color/on_secondary_color" />
+                </TableRow>
+            </TableLayout>
 
             <TextView
-                android:id="@+id/tvDeviceData"
+                android:id="@+id/device_data_duration_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/secondary_color"
-                android:padding="16dp"
-                android:text="Device data will appear here"
+                android:text="It has been running for X hours"
+                android:textColor="@color/on_secondary_color" />
+
+            <TextView
+                android:id="@+id/device_data_current_day_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/secondary_color"
+                android:text="The dough is at day 1"
+                android:textColor="@color/on_secondary_color" />
+
+            <TextView
+                android:id="@+id/device_data_result_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/secondary_color"
+                android:text="The dough is not ready for the next day"
+                android:textColor="@color/on_secondary_color" />
+            <!-- Graphed Data Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonGraphedData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="View Graphed Data"
                 android:textColor="@color/on_secondary_color"
-                android:textSize="16sp" />
+                app:backgroundTint="@color/secondary_variant"
+                app:cornerRadius="20dp" />
         </LinearLayout>
+
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Graphed Data Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonGraphedData"
-        style="@style/Widget.MaterialComponents.Button"
+    <!-- Feeding Instructions Button -->
+
+
+    <!-- buttons for starting and stopping -->
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="View Graphed Data"
-        app:cornerRadius="20dp" />
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginTop="15dp"
+        android:background="@color/background_color"
+        android:dividerPadding="10dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonFeedingInstructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Feeding Instructions"
+            app:cornerRadius="20dp"
+            app:iconPadding="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/device_data_start_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:backgroundTint="@color/green"
+            android:text="Enable Device"
+            app:cornerRadius="20dp"
+            app:iconPadding="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/device_data_new_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:backgroundTint="@color/secondary_color"
+            android:text="Start a new dough!"
+            android:textColor="@color/on_secondary_color"
+            app:cornerRadius="20dp" />
+
+
+    </LinearLayout>
+
+    <!--    <com.google.android.material.button.MaterialButton-->
+    <!--        android:id="@+id/device_data_new_day"-->
+    <!--        style="@style/Widget.MaterialComponents.Button"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="Next Day"-->
+    <!--        android:backgroundTint="@color/yelloworange"-->
+    <!--        app:cornerRadius="0dp"-->
+    <!--        />-->
+
 </LinearLayout>

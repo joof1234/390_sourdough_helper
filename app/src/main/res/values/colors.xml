@@ -22,4 +22,8 @@
     <color name="pale_lavender">#E4DFFF</color>
     <color name="brand_accent">#FF9A80</color>
     <color name="charcoal">#333333</color>
+    <color name="green"> #689B8A</color>
+    <color name="red"> #B9375D </color>
+    <color name="darkpurple"> #280A3E </color>
+    <color name="yelloworange"> #F9CB99</color>
 </resources>
